@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/market/depth
+false
+UriParams: {}
+{"code":"0","msg":"result.success","data":{"asks":[{"price":"2365.18","volume":"5.1446"}],"bids":[{"price":"2365.17","volume":"4.8831"}],"ts":"2026-10-15T18:43:31+08:00"},"success":true}

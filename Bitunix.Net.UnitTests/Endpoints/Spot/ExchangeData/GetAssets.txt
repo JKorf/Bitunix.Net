@@ -1,0 +1,42 @@
+GET
+/api/spot/v1/common/coin/coin_network/list
+false
+UriParams: {}
+{
+  "code": "0",
+  "msg": "Success",
+  "data": [
+    {
+      "name": "USDT",
+      "fullName": "Tether",
+      "logo": "https://image.xushidaifa.com/config/kv/358844.png",
+      "track": "Metaverse",
+      "isHot": 1,
+      "isOpen": 1,
+      "isShow": 1,
+      "depositOpen": 1,
+      "withdrawOpen": 1,
+      "withdrawMin": "0",
+      "withdrawMax": null,
+      "networks": [
+        {
+          "contractPrecision": 6,
+          "contractAddress": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+          "requireMemo": 0,
+          "chain": "TRON",
+          "depositConfirm": 20,
+          "addressRegular": ".+",
+          "network": "Tron (TRC-20)",
+          "isOpen": 1,
+          "isShow": 1,
+          "depositOpen": 1,
+          "withdrawOpen": 1,
+          "withdrawMax": "3000000",
+          "withdrawMin": "0.000001",
+          "depositMin": "0.000001"
+        }
+      ]
+    }
+  ],
+  "success": true
+}

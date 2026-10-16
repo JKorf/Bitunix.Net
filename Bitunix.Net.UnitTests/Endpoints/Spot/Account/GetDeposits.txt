@@ -1,0 +1,46 @@
+POST
+/api/spot/v1/deposit/page
+true
+{
+  "code": "0",
+  "msg": "Success",
+  "data": [
+   {
+      "id": 1909903708907155457,
+      "transactionHash": null,
+      "coin": "USDT",
+      "network": null,
+      "type": "inside_transfer_in",
+      "fromAddress": "989541187",
+      "toAddress": "681979174",
+      "amount": "10.00000000",
+      "status": "pending",
+      "ctime": 1744191503000
+    },
+    {
+      "id": 1909903532977074178,
+      "transactionHash": null,
+      "coin": "USDT",
+      "network": null,
+      "type": "inside_transfer_in",
+      "fromAddress": "989541187",
+      "toAddress": "681979174",
+      "amount": "10.00000000",
+      "status": "pending",
+      "ctime": 1744191461000
+    },
+    {
+      "id": 487067,
+      "transactionHash": "d829e32be84907a4dfb5bee5dcdaee6b637be287f8db52817860e7169003b92d",
+      "coin": "USDT",
+      "network": "Tron (TRC-20)",
+      "type": "deposit",
+      "fromAddress": "TB73gtW1hsTxxA9XUYKLSJKTSHw6Jk53eH",
+      "toAddress": "TPKhSAEy84qvpomF5wF7h5ih1WmbmupXor",
+      "amount": "1000.00000000",
+      "status": "success",
+      "ctime": 1742892246000
+    }
+  ],
+  "success": true
+}

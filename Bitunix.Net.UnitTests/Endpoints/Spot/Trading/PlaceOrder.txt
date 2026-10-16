@@ -1,0 +1,5 @@
+POST
+/api/spot/v1/order/place_order
+true
+BodyParams: {"symbol": "ETHUSDT","side": "1","type": "1","volume": 0.1,"price": 0.1}
+{"code":"0","msg":"result.success","data":{},"success":true}

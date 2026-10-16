@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/market/kline
+false
+UriParams: {"symbol":"ETHUSDT", "interval": "60"}
+{"code":"0","msg":"result.success","data":[{"symbol":"ETHUSDT","open":"2657.58","high":"2659.82","low":"2592.08","close":"2612.44","volume":"7270.7161","ts":"2026-10-07T02:00:00Z"}],"success":true}

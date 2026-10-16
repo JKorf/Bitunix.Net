@@ -1,0 +1,10 @@
+POST
+/api/spot/v1/withdraw
+true
+BodyParams: {"coin": "123","network": "123","address": "123","amount": 0.1,"memo": "123"}
+{
+    "code": "0",
+    "msg": "result.success",
+    "data": "123",
+    "success": true
+}

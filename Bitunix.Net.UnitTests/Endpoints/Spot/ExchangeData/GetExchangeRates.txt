@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/common/rate/list
+false
+UriParams: {}
+{"code":"0","msg":"result.success","data":[{"baseSymbol":"USDT","quoteSymbol":"AUD","rate":"1.4452976228500000"}],"success":true}

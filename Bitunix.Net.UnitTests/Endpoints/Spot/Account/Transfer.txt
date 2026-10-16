@@ -1,0 +1,10 @@
+POST
+/api/spot/v1/funds_transfer
+true
+BodyParams: {"type": "spot_futures","coin": "123","amount": 0.1}
+{
+    "code": "0",
+    "msg": "result.success",
+    "data": "123",
+    "success": true
+}

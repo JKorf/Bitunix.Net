@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/market/kline/history
+false
+UriParams: {"symbol": "ETHUSDT","interval": "60"}
+{"code":"0","msg":"result.success","data":[{"symbol":"ETHUSDT","open":"2373.91","high":"2379.31","low":"2369","close":"2375.39","volume":"1014.0357","ts":"2026-10-15T09:00:00Z"},{"symbol":"ETHUSDT","open":"2380.05","high":"2381.1","low":"2365.62","close":"2373.91","volume":"1577.8947","ts":"2026-10-15T08:00:00Z"},{"symbol":"ETHUSDT","open":"2357.83","high":"2380.87","low":"2355.07","close":"2380.05","volume":"1916.7919","ts":"2026-10-15T07:00:00Z"}],"success":true}

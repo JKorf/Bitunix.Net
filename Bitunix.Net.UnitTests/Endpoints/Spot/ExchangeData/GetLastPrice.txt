@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/market/last_price
+false
+UriParams: {"symbol":"ETHUSDT"}
+{"code":"0","msg":"result.success","data":"123.1","success":true}

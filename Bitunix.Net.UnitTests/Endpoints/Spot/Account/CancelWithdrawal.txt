@@ -1,0 +1,10 @@
+POST
+/api/spot/v1/withdraw/cancel
+true
+BodyParams: {"withdrawId": "123"}
+{
+    "code": "0",
+    "msg": "result.success",
+    "data": null,
+    "success": true 
+}

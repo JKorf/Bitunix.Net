@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/user/account
+true
+UriParams: {}
+{"code":"0","msg":"result.success","data":[{"coin":"ETH","balance":"0.1","balanceLocked":"0.13"}],"success":true}

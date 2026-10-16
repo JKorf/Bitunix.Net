@@ -1,0 +1,5 @@
+GET
+/api/spot/v1/order/detail
+true
+UriParams: {"orderId": "123"}
+{"code":"0","msg":"result.success","data":{"orderId":"123","clientId":null,"userId":"123","orderType":1,"amount":"20","dealAmount":"0","leftAmount":"20","volume":"0.01","dealVolume":"0","leftVolume":"0.01","status":1,"type":1,"side":2,"price":"2000","avgPrice":"0","progress":"0","ctime":"2026-10-15T12:45:18.492725Z","utime":"2026-10-15T12:45:18.581493Z","base":"ETH","quote":"USDT","symbol":"ETHUSDT","fee":"0","feeCoin":"ETH"},"success":true}

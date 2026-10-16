@@ -1,0 +1,31 @@
+POST
+/api/spot/v1/withdraw_transfer/page
+true
+{
+    "code": "0",
+    "msg": "result.success",
+    "data": [
+        {
+            "id": "1909877667383767042",
+            "outBizId": "123456789",
+            "type": "withdraw",
+            "coin": "TRX",
+            "amount": "19.00000000000000000000",
+            "status": "pending",
+            "ctime": 1744185294000,
+            "network": "Tron (TRC-20)",
+            "address": "TJmW5D1p1LnMdTMmxuY1VELHht7v5HV7rU",
+            "transactionHash": null,
+            "feeCoin": null,
+            "fee": null,
+            "memo": null,
+            "toType": null,
+            "toUid": null,
+            "toPhoneCountryCode": null,
+            "toPhoneNumber": null,
+            "toEmail": null,
+            "remark": null
+        }
+    ],
+    "success": true
+}
