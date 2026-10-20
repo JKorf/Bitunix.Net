@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/trade/flash_close_position
+true
+BodyParams: {"positionId": "123"}
+{"code":0,"data":{"positionId":"19848247723672"},"msg":"Success"}

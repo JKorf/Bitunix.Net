@@ -1,3 +1,4 @@
+using CryptoExchange.Net.Converters.SystemTextJson;
 using System.Text.Json.Serialization;
 
 namespace Bitunix.Net.Objects.Models

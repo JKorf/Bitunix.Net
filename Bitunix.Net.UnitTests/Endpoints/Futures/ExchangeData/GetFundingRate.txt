@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/market/funding_rate
+false
+UriParams: {"symbol": "ETHUSDT"}
+{"code":0,"data":{"symbol":"BTCUSDT","markPrice":"60000","lastPrice":"60001","indexPrice":"60001","fundingRate":"0.0005","fundingInterval":8,"nextFundingTime":"1770710400000","maxFundingRate":"0.3","minFundingRate":"-0.3"},"msg":"Success"}

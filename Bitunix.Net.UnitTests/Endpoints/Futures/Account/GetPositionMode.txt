@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/account/position_mode
+true
+UriParams: {}
+{"code":0,"data":{"positionMode":"HEDGE"},"msg":"Success"}

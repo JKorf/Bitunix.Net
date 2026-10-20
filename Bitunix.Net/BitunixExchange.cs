@@ -60,8 +60,7 @@ namespace Bitunix.Net
             baseAsset = AssetAliases.CommonToExchangeName(baseAsset.ToUpperInvariant());
             quoteAsset = AssetAliases.CommonToExchangeName(quoteAsset.ToUpperInvariant());
 
-#warning todo
-            throw new NotImplementedException();
+            return baseAsset + quoteAsset;
         }
 
         /// <summary>

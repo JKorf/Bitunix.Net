@@ -29,7 +29,11 @@ namespace Bitunix.Net
                 null,
                 null,
                 null,
+
                 null,
+                null,
+                null,
+
                 null,
                 null,
                 userIdentifier,
@@ -61,8 +65,14 @@ namespace Bitunix.Net
                 null,
                 null,
                 null,
+
                 null,
                 null,
+                null,
+
+                null,
+                null,
+
                 null,
                 null,
                 userIdentifier,

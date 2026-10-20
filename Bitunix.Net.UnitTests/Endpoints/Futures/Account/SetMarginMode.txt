@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/account/change_margin_mode
+true
+BodyParams: {"symbol": "ETHUSDT","marginCoin": "123","marginMode": "ISOLATION"}
+{"code":0,"data":{"marginCoin":"USDT","symbol":"BTCUSDT","marginMode":"ISOLATION"},"msg":"Success"}

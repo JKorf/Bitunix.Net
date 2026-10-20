@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/trade/cancel_orders
+true
+BodyParams: {"symbol": "ETHUSDT"}
+{"code":0,"data":{"successList":[{"orderId":"11111","clientId":"22222"}],"failureList":[{"orderId":"11112","clientId":"22223","errorMsg":"Order status error","errorCode":10013}]},"msg":"Success"}

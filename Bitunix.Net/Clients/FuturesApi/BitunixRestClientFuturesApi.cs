@@ -1,18 +1,19 @@
+using Bitunix.Net.Clients.MessageHandlers;
+using Bitunix.Net.Interfaces.Clients.FuturesApi;
+using Bitunix.Net.Objects.Models;
+using Bitunix.Net.Objects.Options;
+using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Bitunix.Net.Interfaces.Clients.FuturesApi;
-using Bitunix.Net.Objects.Options;
-using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Converters.SystemTextJson;
-using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.SharedApis;
-using CryptoExchange.Net.Objects.Errors;
-using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
-using Bitunix.Net.Clients.MessageHandlers;
 
 namespace Bitunix.Net.Clients.FuturesApi
 {
@@ -23,7 +24,7 @@ namespace Bitunix.Net.Clients.FuturesApi
         protected override ErrorMapping ErrorMapping => BitunixErrors.Errors;
 
         /// <inheritdoc />
-        protected override IRestMessageHandler MessageHandler { get; } = new BitunixRestMessageHandler(BitunixErrors.Errors);
+        protected override IRestMessageHandler MessageHandler { get; } = new BitunixRestFuturesMessageHandler(BitunixErrors.Errors);
         #endregion
 
         #region Api clients
@@ -38,9 +39,8 @@ namespace Bitunix.Net.Clients.FuturesApi
         #endregion
 
         #region constructor/destructor
-#warning address
         internal BitunixRestClientFuturesApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, BitunixRestOptions options)
-            : base(loggerFactory, BitunixExchange.Metadata.Id, httpClient, options.Environment.SpotRestClientAddress, options, options.FuturesOptions)
+            : base(loggerFactory, BitunixExchange.Metadata.Id, httpClient, options.Environment.FuturesRestClientAddress, options, options.FuturesOptions)
         {
             Account = new BitunixRestClientFuturesApiAccount(this);
             ExchangeData = new BitunixRestClientFuturesApiExchangeData(_logger, this);
@@ -58,25 +58,30 @@ namespace Bitunix.Net.Clients.FuturesApi
 
         internal async Task<HttpResult> SendAsync(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
         {
-            var result = await base.SendAsync<Unit>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+            var result = await base.SendAsync<BitunixFuturesResponse>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail(result);
+
             return result;
         }
 
         internal async Task<HttpResult<T>> SendAsync<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
         {
-            var result = await base.SendAsync<T>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
-            return result;
+            var result = await base.SendAsync<BitunixFuturesResponse<T>>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<T>(result);
+
+            return HttpResult.Ok(result, result.Data.Data);
         }
+
 
         /// <inheritdoc />
         protected override Task<HttpResult<DateTime>> GetServerTimestampAsync()
-            => ExchangeData.GetServerTimeAsync();
+            => throw new NotImplementedException();
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null) 
             => BitunixExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverDate);
 
-        /// <inheritdoc />
-        public IBitunixRestClientFuturesApiShared SharedClient => this;
     }
 }

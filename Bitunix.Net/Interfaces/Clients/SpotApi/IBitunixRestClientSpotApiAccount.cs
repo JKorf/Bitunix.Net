@@ -44,7 +44,7 @@ namespace Bitunix.Net.Interfaces.Clients.SpotApi
             string network,
             string address,
             decimal quantity,
-            string memo,
+            string? memo = null,
             CancellationToken ct = default);
 
         /// <summary>

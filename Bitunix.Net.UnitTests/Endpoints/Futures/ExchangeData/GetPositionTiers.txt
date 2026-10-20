@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/position/get_position_tiers
+false
+UriParams: {"symbol": "ETHUSDT"}
+{"code":0,"data":[{"symbol":"BTCUSDT","level":1,"startValue":"0","endValue":"50000","leverage":125,"maintenanceMarginRate":"0.004"},{"symbol":"BTCUSDT","level":2,"startValue":"50000","endValue":"200000","leverage":100,"maintenanceMarginRate":"0.005"}],"msg":"Success"}

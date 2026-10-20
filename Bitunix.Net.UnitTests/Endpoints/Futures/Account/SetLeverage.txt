@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/account/change_leverage
+true
+BodyParams: {"symbol": "ETHUSDT","marginCoin": "123","leverage": 123}
+{"code":0,"data":{"marginCoin":"USDT","leverage":12,"symbol":"BTCUSDT"},"msg":"Success"}

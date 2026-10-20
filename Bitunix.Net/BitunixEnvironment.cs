@@ -17,15 +17,28 @@ namespace Bitunix.Net
         /// Socket API address
         /// </summary>
         public string SpotSocketClientAddress { get; }
+        /// <summary>
+        /// Rest API address
+        /// </summary>
+        public string FuturesRestClientAddress { get; }
+
+        /// <summary>
+        /// Socket API address
+        /// </summary>
+        public string FuturesSocketClientAddress { get; }
 
         internal BitunixEnvironment(
             string name,
             string spotRestAddress,
-            string spotStreamAddress) :
+            string spotStreamAddress,
+            string futuresRestAddress,
+            string futuresStreamAddress) :
             base(name)
         {
             SpotRestClientAddress = spotRestAddress;
             SpotSocketClientAddress = spotStreamAddress;
+            FuturesRestClientAddress = futuresRestAddress;
+            FuturesSocketClientAddress = futuresStreamAddress;
         }
 
         /// <summary>
@@ -60,19 +73,19 @@ namespace Bitunix.Net
         public static BitunixEnvironment Live { get; }
             = new BitunixEnvironment(TradeEnvironmentNames.Live,
                                      BitunixApiAddresses.Default.SpotRestClientAddress,
-                                     BitunixApiAddresses.Default.SpotSocketClientAddress);
+                                     BitunixApiAddresses.Default.SpotSocketClientAddress,
+                                     BitunixApiAddresses.Default.FuturesRestClientAddress,
+                                     BitunixApiAddresses.Default.FuturesSocketClientAddress);
 
         /// <summary>
         /// Create a custom environment
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="spotRestAddress"></param>
-        /// <param name="spotSocketStreamsAddress"></param>
-        /// <returns></returns>
         public static BitunixEnvironment CreateCustom(
                         string name,
                         string spotRestAddress,
-                        string spotSocketStreamsAddress)
-            => new BitunixEnvironment(name, spotRestAddress, spotSocketStreamsAddress);
+                        string spotSocketStreamsAddress,
+                        string futuresRestAddress,
+                        string futuresSocketStreamsAddress)
+            => new BitunixEnvironment(name, spotRestAddress, spotSocketStreamsAddress, futuresRestAddress, futuresSocketStreamsAddress);
     }
 }

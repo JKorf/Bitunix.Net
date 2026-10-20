@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/market/get_funding_rate_history
+false
+UriParams: {"symbol": "ETHUSDT"}
+{"code":0,"data":[{"fundingRate":"-0.00001191","fundingTime":"1772449200000","markPrice":"66286.6"}],"msg":"Success"}

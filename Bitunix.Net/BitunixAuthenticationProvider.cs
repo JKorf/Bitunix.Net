@@ -1,3 +1,4 @@
+using Bitunix.Net.Clients.FuturesApi;
 using Bitunix.Net.Objects.Internal;
 using Bitunix.Net.Objects.Models;
 using CryptoExchange.Net;
@@ -38,11 +39,19 @@ namespace Bitunix.Net
                     signStr += queryParam.Key + queryParam.Value;
             }
 
-            if (requestConfig.BodyParameters != null && !requestConfig.BodyParameters.Empty) 
+            if (requestConfig.BodyParameters != null) 
             {
-                var bodyString = GetSerializedBody(_messageSerializer, requestConfig.BodyParameters);
-                signStr += bodyString;
-                requestConfig.SetBodyContent(bodyString);
+                if (requestConfig.BodyParameters.Empty)
+                {
+                    if (apiClient is BitunixRestClientFuturesApi)
+                        signStr += "{}";
+                }
+                else
+                {
+                    var bodyString = GetSerializedBody(_messageSerializer, requestConfig.BodyParameters);
+                    signStr += bodyString;
+                    requestConfig.SetBodyContent(bodyString);
+                }
             }
 
             var sign = SignSHA256(signStr).ToLowerInvariant();
@@ -85,6 +94,26 @@ namespace Bitunix.Net
             request.Params.Add("nonce", nonce);
             request.Params.Add("timestamp", timestamp);
             request.Params.Add("sign", sign);
+        }
+
+        public BitunixFuturesSocketParamRequest GetLogin(SocketApiClient apiClient)
+        {
+            var nonce = ExchangeHelpers.RandomString(4);
+            var timestamp = GetMillisecondTimestamp(apiClient);
+            var signStr = nonce + timestamp + Key;
+
+            var sign = SignSHA256(signStr).ToLowerInvariant();
+            sign = SignSHA256(sign + Credential.Secret).ToLowerInvariant();
+            var parameters = new Parameters(BitunixExchange._parameterSerializationSettings);
+            parameters.Add("apiKey", Key);
+            parameters.Add("timestamp", timestamp.ToString());
+            parameters.Add("nonce", nonce);
+            parameters.Add("sign", sign);
+            return new BitunixFuturesSocketParamRequest
+            {
+                Operation = "login",
+                Parameters = [parameters]
+            };
         }
     }
 }

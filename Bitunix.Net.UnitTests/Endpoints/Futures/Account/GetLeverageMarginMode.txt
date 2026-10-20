@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/account/get_leverage_margin_mode
+true
+UriParams: {"symbol": "ETHUSDT","marginCoin": "123"}
+{"code":0,"data":{"symbol":"BTCUSDT","marginCoin":"USDT","leverage":10,"marginMode":"ISOLATION"},"msg":"Success"}

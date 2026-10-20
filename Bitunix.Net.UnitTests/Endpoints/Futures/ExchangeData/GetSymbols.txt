@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/market/trading_pairs
+false
+UriParams: {}
+{"code":0,"data":[{"symbol":"BTCUSDT","base":"BTC","quote":"USDT","minTradeVolume":"0.0001","minBuyPriceOffset":"-0.95","maxSellPriceOffset":"100","maxLimitOrderVolume":"100000","maxMarketOrderVolume":"50000","basePrecision":4,"quotePrecision":1,"minLeverage":1,"maxLeverage":125,"defaultLeverage":20,"defaultMarginMode":1,"priceProtectScope":"0.02","symbolStatus":"OPEN","isApiSupported":true,"maxFundingRate":"0.3","minFundingRate":"-0.3"}],"msg":"Success"}

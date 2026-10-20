@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/account/change_position_mode
+true
+BodyParams: {"positionMode": "HEDGE"}
+{"code":0,"data":{"positionMode":"HEDGE"},"msg":"Success"}

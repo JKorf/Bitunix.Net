@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/tpsl/cancel_order
+true
+BodyParams: {"symbol": "ETHUSDT","orderId": "123"}
+{"code":0,"data":{"orderId":"11111"},"msg":"Success"}

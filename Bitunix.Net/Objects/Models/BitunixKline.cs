@@ -43,6 +43,6 @@ public record BitunixKline
     /// ["<c>ts</c>"] Timestamp
     /// </summary>
     [JsonPropertyName("ts")]
-    public DateTime Timestamp { get; set; }
+    public DateTime OpenTime { get; set; }
 }
 

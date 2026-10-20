@@ -13,6 +13,14 @@ namespace Bitunix.Net.Objects
         /// The address used by the BitunixSocketClient for the websocket Spot API
         /// </summary>
         public string SpotSocketClientAddress { get; set; } = "";
+        /// <summary>
+        /// The address used by the BitunixRestClient for the Futures API
+        /// </summary>
+        public string FuturesRestClientAddress { get; set; } = "";
+        /// <summary>
+        /// The address used by the BitunixSocketClient for the websocket Futures API
+        /// </summary>
+        public string FuturesSocketClientAddress { get; set; } = "";
 
         /// <summary>
         /// The default addresses to connect to the Bitunix API
@@ -20,7 +28,9 @@ namespace Bitunix.Net.Objects
         public static BitunixApiAddresses Default = new BitunixApiAddresses
         {
             SpotRestClientAddress = "https://openapi.bitunix.com",
-            SpotSocketClientAddress = "wss://openapi.bitunix.com:443"
+            SpotSocketClientAddress = "wss://openapi.bitunix.com:443",
+            FuturesRestClientAddress = "https://fapi.bitunix.com",
+            FuturesSocketClientAddress = "wss://fapi.bitunix.com",
         };
     }
 }

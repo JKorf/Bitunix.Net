@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/account/trading_settings
+true
+UriParams: {}
+{"code":0,"data":[{"symbol":"BTCUSDT","marginCoin":"USDT","marginMode":"CROSS","leverage":20,"longLeverage":20,"shortLeverage":20},{"symbol":"ETHUSDT","marginCoin":"USDT","marginMode":"ISOLATION","leverage":10,"longLeverage":10,"shortLeverage":10}],"msg":"Success"}

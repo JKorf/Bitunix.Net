@@ -13,34 +13,44 @@ namespace Bitunix.Net.UnitTests
     public class BitunixRestClientTests
     {
         [Test]
-        public void CheckSignatureExample1()
-        {
-            var authProvider = new BitunixAuthenticationProvider(new BitunixCredentials("XXX", "XXX"));
-            var client = (RestApiClient)new BitunixRestClient().SpotApi;
-
-            CryptoExchange.Net.Testing.TestHelpers.CheckSignature(
-                client,
-                authProvider,
-                HttpMethod.Post,
-                "/api/v3/order",
-                (uriParams, bodyParams, headers) =>
-                {
-                    return bodyParams["signature"].ToString();
-                },
-                "c8db56825ae71d6d79447849e617115f4a920fa2acdcab2b053c4b2838bd6b71",
-                new Parameters(BitunixExchange._parameterSerializationSettings)
-                {
-                    { "symbol", "LTCBTC" },
-                },
-                DateTimeConverter.ParseFromDouble(1499827319559),
-                false);
-        }
-
-        [Test]
         public void CheckInterfaces()
         {
             CryptoExchange.Net.Testing.TestHelpers.CheckForMissingRestInterfaces<BitunixRestClient>();
             CryptoExchange.Net.Testing.TestHelpers.CheckForMissingSocketInterfaces<BitunixSocketClient>();
+        }
+
+        [Test]
+        public void TestRestSpotSharedApiDiscoveryMatchesAggregate()
+        {
+            var (missingOptions, missingInterfaces) = CryptoExchange.Net.Testing.TestHelpers.ValidateSharedApi(new BitunixRestClient().SpotApi.SharedApi);
+
+            Assert.That(missingOptions, Is.Empty);
+            Assert.That(missingInterfaces, Is.Empty);
+        }
+
+        [Test]
+        public void TestSocketSpotSharedApiDiscoveryMatchesAggregate()
+        {
+            var (missingOptions, missingInterfaces) = CryptoExchange.Net.Testing.TestHelpers.ValidateSharedApi(new BitunixSocketClient().SpotApi.SharedApi);
+
+            Assert.That(missingOptions, Is.Empty);
+            Assert.That(missingInterfaces, Is.Empty);
+        }
+
+        [Test]
+        public void TestSpotRestSharedApiDoesntHaveUnsupportedCapabilities()
+        {
+            var unsupported = CryptoExchange.Net.Testing.TestHelpers.ValidateUnsupportedCapabilities(new BitunixRestClient().SpotApi.SharedApi);
+
+            Assert.That(unsupported, Is.Empty);
+        }
+
+        [Test]
+        public void TestSpotSocketSharedApiDoesntHaveUnsupportedCapabilities()
+        {
+            var unsupported = CryptoExchange.Net.Testing.TestHelpers.ValidateUnsupportedCapabilities(new BitunixSocketClient().SpotApi.SharedApi);
+
+            Assert.That(unsupported, Is.Empty);
         }
     }
 }

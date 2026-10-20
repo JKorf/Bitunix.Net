@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/market/depth
+false
+UriParams: {"symbol": "ETHUSDT"}
+{"code":0,"data":{"asks":[[0.1001,0.1],[0.1002,10]],"bids":[[0.1,1],[0.0999,10.23]]},"msg":"Success"}

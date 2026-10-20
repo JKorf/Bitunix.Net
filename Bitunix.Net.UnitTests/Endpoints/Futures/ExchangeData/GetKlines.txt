@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/market/kline
+false
+UriParams: {"symbol": "ETHUSDT","interval": "1m"}
+{"code":0,"data":[{"open":"60000","high":"60001","close":"60000","low":"59989.2","time":111111,"quoteVol":"1","baseVol":"60000","type":"LAST_PRICE"}],"msg":"Success"}

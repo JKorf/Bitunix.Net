@@ -1,0 +1,5 @@
+POST
+/api/v1/futures/account/adjust_position_margin
+true
+BodyParams: {"symbol": "ETHUSDT","marginCoin": "123","amount": 0.1}
+{"code":0,"data":"","msg":"Success"}

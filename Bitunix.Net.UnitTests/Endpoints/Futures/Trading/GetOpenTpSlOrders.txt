@@ -1,0 +1,5 @@
+GET
+/api/v1/futures/tpsl/get_pending_orders
+true
+UriParams: {"symbol": "ETHUSDT","positionId": "123","skip": 123}
+{"code":0,"data":[{"id":"123","positionId":"12345678","symbol":"BTCUSDT","base":"BTC","quote":"USDT","tpPrice":"50000","tpStopType":"LAST_PRICE","slPrice":"70000","slStopType":"LAST_PRICE","tpOrderType":"LIMIT","tpOrderPrice":"50000","slOrderType":"LIMIT","slOrderPrice":"70000","tpQty":"0.01","slQty":"0.01"}],"msg":"Success"}

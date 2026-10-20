@@ -68,7 +68,7 @@ public record BitunixWithdrawal
     /// ["<c>fee</c>"] Fee
     /// </summary>
     [JsonPropertyName("fee")]
-    public string? Fee { get; set; }
+    public decimal? Fee { get; set; }
     /// <summary>
     /// ["<c>memo</c>"] Memo
     /// </summary>
