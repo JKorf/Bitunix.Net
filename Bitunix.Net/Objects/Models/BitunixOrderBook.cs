@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.Json.Serialization;
-using Bitunix.Net.Enums;
 using CryptoExchange.Net.Interfaces;
 
 namespace Bitunix.Net.Objects.Models;

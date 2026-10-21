@@ -3,9 +3,7 @@ using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,14 +43,14 @@ namespace Bitunix.Net.Clients.SpotApi
 
         private SharedSpotSymbol ParseSymbol(BitunixSymbol s)
         {
-            var result = new SharedSpotSymbol(s.BaseAsset, s.QuoteAsset, s.Symbol, true)
+            var result = new SharedSpotSymbol(s.BaseAsset, s.QuoteAsset, s.Symbol.ToUpper(), true)
             {
                 MinTradeQuantity = s.MinOrderQuantity,
                 MinNotionalValue = s.MinOrderValue,
                 MaxTradeQuantity = s.MaxOrderQuantity,
                 PriceDecimals = s.QuoteAssetPrecision,
                 QuantityDecimals = s.BaseAssetPrecision,
-                DisplayName = s.Symbol,
+                DisplayName = s.Symbol.ToUpper(),
                 QuoteAssetType = SharedAssetType.Crypto,
                 QuoteAssetSubType = SharedAssetSubType.StableCoin
             };

@@ -1,5 +1,4 @@
 ﻿using Bitunix.Net.Enums;
-using System;
 using System.Text.Json.Serialization;
 
 namespace Bitunix.Net.Objects.Models;

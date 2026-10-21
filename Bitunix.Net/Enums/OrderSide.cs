@@ -13,11 +13,11 @@ public enum OrderSide
     /// <summary>
     /// ["<c>1</c>"] Sell
     /// </summary>
-    [Map("1")]
+    [Map("1", "Sell", "SELL")]
     Sell,
     /// <summary>
     /// ["<c>2</c>"] Buy
     /// </summary>
-    [Map("2")]
+    [Map("2", "Buy", "BUY")]
     Buy,
 }

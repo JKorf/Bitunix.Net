@@ -13,11 +13,11 @@ public enum TradeRole
     /// <summary>
     /// ["<c>1</c>"] Maker
     /// </summary>
-    [Map("1")]
+    [Map("1", "MAKER")]
     Maker,
     /// <summary>
     /// ["<c>2</c>"] Taker
     /// </summary>
-    [Map("2")]
+    [Map("2", "TAKER")]
     Taker,
 }

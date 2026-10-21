@@ -55,12 +55,12 @@ public record BitunixPositionHistory
     /// ["<c>liqQty</c>"] Liquidation quantity
     /// </summary>
     [JsonPropertyName("liqQty")]
-    public decimal LiquidationQuantity { get; set; }
+    public decimal? LiquidationQuantity { get; set; }
     /// <summary>
     /// ["<c>side</c>"] Side
     /// </summary>
     [JsonPropertyName("side")]
-    public PositionSide Side { get; set; }
+    public OrderSide Side { get; set; }
     /// <summary>
     /// ["<c>positionMode</c>"] Position mode
     /// </summary>

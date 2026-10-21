@@ -2,7 +2,6 @@ using CryptoExchange.Net.Objects;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CryptoExchange.Net.Objects.Sockets;
 using Bitunix.Net.Objects.Models;
 using CryptoExchange.Net.Interfaces.Clients;
 using Bitunix.Net.Enums;

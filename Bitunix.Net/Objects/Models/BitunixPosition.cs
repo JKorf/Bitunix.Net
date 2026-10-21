@@ -33,7 +33,7 @@ public record BitunixPosition
     /// ["<c>side</c>"] Side
     /// </summary>
     [JsonPropertyName("side")]
-    public PositionSide PositionSide { get; set; }
+    public OrderSide Side { get; set; }
     /// <summary>
     /// ["<c>positionMode</c>"] Position mode
     /// </summary>

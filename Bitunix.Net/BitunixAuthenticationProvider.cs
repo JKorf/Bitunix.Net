@@ -1,19 +1,15 @@
 using Bitunix.Net.Clients.FuturesApi;
 using Bitunix.Net.Objects.Internal;
-using Bitunix.Net.Objects.Models;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Sockets;
-using CryptoExchange.Net.Sockets.Default;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Bitunix.Net
 {
@@ -99,14 +95,14 @@ namespace Bitunix.Net
         public BitunixFuturesSocketParamRequest GetLogin(SocketApiClient apiClient)
         {
             var nonce = ExchangeHelpers.RandomString(4);
-            var timestamp = GetMillisecondTimestamp(apiClient);
+            var timestamp = GetMillisecondTimestampLong(apiClient);
             var signStr = nonce + timestamp + Key;
 
             var sign = SignSHA256(signStr).ToLowerInvariant();
             sign = SignSHA256(sign + Credential.Secret).ToLowerInvariant();
             var parameters = new Parameters(BitunixExchange._parameterSerializationSettings);
             parameters.Add("apiKey", Key);
-            parameters.Add("timestamp", timestamp.ToString());
+            parameters.Add("timestamp", timestamp);
             parameters.Add("nonce", nonce);
             parameters.Add("sign", sign);
             return new BitunixFuturesSocketParamRequest

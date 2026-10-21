@@ -18,20 +18,20 @@ namespace Bitunix.Net
         internal static JsonSerializerOptions _serializerContext = SerializerOptions.WithConverters(JsonSerializerContextCache.GetOrCreate<BitunixSourceGenerationContext>());
         internal static ParameterSerializationSettings _parameterSerializationSettings = new ParameterSerializationSettings
         {
-            Decimal = DecimalSerialization.String
+            Decimal = DecimalSerialization.String,
+            DateTimes = DateTimeSerialization.MillisecondsString
         };
 
         /// <summary>
         /// Platform metadata
         /// </summary>
-#warning TODO
         public static PlatformInfo Metadata { get; } = new PlatformInfo(
                 "Bitunix",
                 "Bitunix",
-                "",
-                "",
-                ["",
-                 ""],
+                "https://raw.githubusercontent.com/JKorf/Bitunix.Net/main/Bitunix.Net/Icon/icon.png",
+                "https://www.bitunix.com",
+                ["https://www.bitunix.com/api-docs/spots/en_us/",
+                 "https://www.bitunix.com/api-docs/futures/common/introduction.html"],
                 PlatformType.CryptoCurrencyExchange,
                 CentralizationType.Centralized,
                 BitunixEnvironment.All
@@ -92,6 +92,7 @@ namespace Bitunix.Net
 
         private void Initialize()
         {
+            // Rate limits are enforced per endpoint
             Bitunix = new RateLimitGate("Bitunix");
             Bitunix.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             Bitunix.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);

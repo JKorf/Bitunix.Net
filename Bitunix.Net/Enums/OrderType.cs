@@ -13,11 +13,11 @@ public enum OrderType
     /// <summary>
     /// ["<c>1</c>"] Limit
     /// </summary>
-    [Map("1")]
+    [Map("1", "Limit", "LIMIT")]
     Limit,
     /// <summary>
     /// ["<c>2</c>"] Market
     /// </summary>
-    [Map("2")]
+    [Map("2", "Market", "MARKET")]
     Market,
 }

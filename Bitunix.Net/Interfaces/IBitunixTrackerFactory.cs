@@ -10,8 +10,6 @@ namespace Bitunix.Net.Interfaces
     /// </summary>
     public interface IBitunixTrackerFactory : ITrackerFactory
     {
-#warning TODO
-
         /// <summary>
         /// Create a new Spot user data tracker
         /// </summary>

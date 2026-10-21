@@ -3,7 +3,6 @@ using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using System;
-using Bitunix.Net.Objects.Models;
 using Bitunix.Net.Objects.Internal;
 using CryptoExchange.Net.Clients;
 
@@ -17,9 +16,8 @@ namespace Bitunix.Net.Objects.Sockets
         {
             _client = client;
 
-            ExpectsResponse = false;
-
-            MessageRouter = MessageRouter.CreateForQuery<object>("", HandleMessage);
+            RequestTimeout = TimeSpan.FromSeconds(5);
+            MessageRouter = MessageRouter.CreateForQuery<object>("login", HandleMessage);
         }
 
         public CallResult<object> HandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, object message)

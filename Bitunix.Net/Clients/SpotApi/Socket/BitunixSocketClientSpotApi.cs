@@ -5,7 +5,6 @@ using Bitunix.Net.Objects.Internal;
 using Bitunix.Net.Objects.Models;
 using Bitunix.Net.Objects.Options;
 using Bitunix.Net.Objects.Sockets;
-using Bitunix.Net.Objects.Sockets.Subscriptions;
 using CryptoExchange.Net;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
@@ -13,14 +12,11 @@ using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
-using CryptoExchange.Net.Objects.Sockets;
-using CryptoExchange.Net.Requests;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +31,7 @@ namespace Bitunix.Net.Clients.SpotApi
         #region fields
         private readonly BitunixSocketClientSpotSharedApi _sharedApi;
 
-        protected override ErrorMapping ErrorMapping => BitunixErrors.Errors;
+        protected override ErrorMapping ErrorMapping => BitunixErrors.SpotErrors;
         #endregion
 
         #region constructor/destructor

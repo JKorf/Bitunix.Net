@@ -45,7 +45,7 @@ public record BitunixFuturesOrder
     /// ["<c>price</c>"] Price
     /// </summary>
     [JsonPropertyName("price")]
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
     /// <summary>
     /// ["<c>symbol</c>"] Symbol
     /// </summary>
@@ -86,6 +86,16 @@ public record BitunixFuturesOrder
     /// </summary>
     [JsonPropertyName("type")]
     public OrderType Type { get; set; }
+    [JsonPropertyName("orderType"), JsonInclude]
+    internal OrderType OrderType
+    {
+        set => Type = value;
+    }
+    /// <summary>
+    /// ["<c>side</c>"] Side
+    /// </summary>
+    [JsonPropertyName("side")]
+    public OrderSide Side { get; set; }
     /// <summary>
     /// ["<c>effect</c>"] Time in force
     /// </summary>

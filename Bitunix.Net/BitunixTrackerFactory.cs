@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Trackers.Klines;
 using CryptoExchange.Net.Trackers.Trades;
@@ -36,16 +35,10 @@ namespace Bitunix.Net
         }
 
         /// <inheritdoc />
-        public bool CanCreateKlineTracker(SharedSymbol symbol, SharedKlineInterval interval)
-        {
-            var client = _serviceProvider?.GetRequiredService<IBitunixSocketClient>() ?? new BitunixSocketClient();
-#warning TODO
-            SubscribeKlineOptions klineOptions = new SubscribeKlineOptions(BitunixExchange.Metadata.Id, true);
-            return klineOptions.IsSupported(interval); 
-        }
+        public bool CanCreateKlineTracker(SharedSymbol symbol, SharedKlineInterval interval) => false;
 
         /// <inheritdoc />
-        public bool CanCreateTradeTracker(SharedSymbol symbol) => true;
+        public bool CanCreateTradeTracker(SharedSymbol symbol) => false;
 
         /// <inheritdoc />
         public IKlineTracker CreateKlineTracker(SharedSymbol symbol, SharedKlineInterval interval, int? limit = null, TimeSpan? period = null, ExchangeParameters? exchangeParameters = null)
@@ -53,19 +46,18 @@ namespace Bitunix.Net
             var restClient = _serviceProvider?.GetRequiredService<IBitunixRestClient>() ?? new BitunixRestClient();
             var socketClient = _serviceProvider?.GetRequiredService<IBitunixSocketClient>() ?? new BitunixSocketClient();
 
-#warning todo
             throw new NotImplementedException();
-            //IKlineRestClient sharedRestClient;
-            //IKlineSocketClient sharedSocketClient;
+
+            //IGetKlinesRest sharedRestClient;
+            //ISubscribeKlinesSocket sharedSocketClient;
             //if (symbol.TradingMode == TradingMode.Spot)
             //{
-            //    sharedRestClient = restClient.SpotApi.SharedClient;
-            //    sharedSocketClient = socketClient.SpotApi.SharedClient;
+            //    sharedRestClient = restClient.SpotApi.SharedApi;
             //}
             //else
             //{
-            //    sharedRestClient = restClient.FuturesApi.SharedClient;
-            //    sharedSocketClient = socketClient.FuturesApi.SharedClient;
+            //    sharedRestClient = restClient.FuturesApi.SharedApi;
+            //    sharedSocketClient = socketClient.FuturesApi.SharedApi;
             //}
 
             //return new KlineTracker(
@@ -85,7 +77,6 @@ namespace Bitunix.Net
             var restClient = _serviceProvider?.GetRequiredService<IBitunixRestClient>() ?? new BitunixRestClient();
             var socketClient = _serviceProvider?.GetRequiredService<IBitunixSocketClient>() ?? new BitunixSocketClient();
 
-#warning todo
             throw new NotImplementedException();
 
             //IRecentTradeRestClient? sharedRestClient;

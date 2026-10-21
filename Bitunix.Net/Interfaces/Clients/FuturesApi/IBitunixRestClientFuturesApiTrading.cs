@@ -1,10 +1,8 @@
 using Bitunix.Net.Enums;
 using Bitunix.Net.Objects.Models;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.SharedApis;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -16,6 +16,13 @@ namespace Bitunix.Net.Interfaces.Clients.FuturesApi
     public interface IBitunixSocketClientFuturesApi : ISocketApiClient<BitunixCredentials>, IDisposable
     {
         /// <summary>
+        /// [V2] Gets the aggregate Shared API interface. Shared APIs provide a common,
+        /// exchange-independent contract for accessing functionality across different
+        /// exchange client libraries.
+        /// </summary>
+        public IBitunixSocketClientFuturesSharedApi SharedApi { get; }
+
+        /// <summary>
         /// Subscribe to price ticker updates
         /// <para><a href="https://www.bitunix.com/api-docs/futures/websocket/public/Ticker%20Channel.html" /></para>
         /// </summary>
@@ -137,6 +144,25 @@ namespace Bitunix.Net.Interfaces.Clients.FuturesApi
         /// <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
         Task<WebSocketResult<UpdateSubscription>> SubscribeToAggregatedTickerUpdatesAsync(IEnumerable<string> symbols, Action<DataEvent<BitunixAggTickerUpdate[]>> onMessage, CancellationToken ct = default);
 
-        Task<WebSocketResult<UpdateSubscription>> SubscribeToBalanceUpdatesAsync(Action<DataEvent<BitunixBalanceUpdate>> onMessage, CancellationToken ct = default);
+        /// <summary>
+        /// Subscribe to user data updates
+        /// <para>
+        /// <a href="https://www.bitunix.com/api-docs/futures/websocket/private/Balance%20Channel.html" /><br />
+        /// <a href="https://www.bitunix.com/api-docs/futures/websocket/private/Order%20Channel.html" /><br />
+        /// <a href="https://www.bitunix.com/api-docs/futures/websocket/private/Position%20Channel.html" /><br />
+        /// <a href="https://www.bitunix.com/api-docs/futures/websocket/private/Tp%20Sl%20Channel.html" /><br /></para>
+        /// </summary>
+        /// <param name="onBalanceMessage">Event handler for balance updates</param>
+        /// <param name="onOrderMessage">Event handler for order updates</param>
+        /// <param name="onPositionMessage">Event handler for position updates</param>
+        /// <param name="onTpSlMessage">Event handler for tp/sl order updates</param>
+        /// <param name="ct">Cancellation token for closing this subscription</param>
+        /// <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
+            Action<DataEvent<BitunixBalanceUpdate>>? onBalanceMessage = null,
+            Action<DataEvent<BitunixFuturesOrderUpdate>>? onOrderMessage = null,
+            Action<DataEvent<BitunixPositionUpdate>>? onPositionMessage = null,
+            Action<DataEvent<BitunixTpSlUpdate>>? onTpSlMessage = null,
+            CancellationToken ct = default);
     }
 }

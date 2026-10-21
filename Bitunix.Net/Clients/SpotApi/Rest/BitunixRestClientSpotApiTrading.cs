@@ -90,8 +90,8 @@ namespace Bitunix.Net.Clients.SpotApi
             parameters.Add("side", side);
             parameters.Add("type", type);
             parameters.Add("status", status);
-            parameters.Add("startTime", startTime);
-            parameters.Add("endTime", endTime);
+            parameters.Add("startTime", startTime?.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+            parameters.Add("endTime", endTime?.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             parameters.Add("page", page);
             parameters.Add("pageSize", pageSize);
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/api/spot/v1/order/history/page", BitunixExchange.RateLimiter.Bitunix, 1, true);

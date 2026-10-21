@@ -1,9 +1,6 @@
-﻿using CryptoExchange.Net.SharedApis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bitunix.Net.Interfaces.Clients.FuturesApi;
+using Bitunix.Net.Interfaces.Clients.SpotApi;
+using CryptoExchange.Net.SharedApis;
 
 namespace Bitunix.Net.Interfaces.Clients
 {
@@ -12,6 +9,21 @@ namespace Bitunix.Net.Interfaces.Clients
     /// </summary>
     public interface IBitunixSharedApiClient : ISharedApiClientBase
     {
-#warning TODO
+        /// <summary>
+        /// Spot REST shared API implementations
+        /// </summary>
+        IBitunixRestClientSpotSharedApi SpotRest { get; }
+        /// <summary>
+        /// Spot WebSocket shared API implementations
+        /// </summary>
+        IBitunixSocketClientSpotSharedApi SpotSocket { get; }
+        /// <summary>
+        /// Futures REST shared API implementations
+        /// </summary>
+        IBitunixRestClientFuturesSharedApi FuturesRest { get; }
+        /// <summary>
+        /// Futures WebSocket shared API implementations
+        /// </summary>
+        IBitunixSocketClientFuturesSharedApi FuturesSocket { get; }
     }
 }

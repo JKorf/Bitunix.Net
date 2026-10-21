@@ -33,6 +33,8 @@ namespace Bitunix.Net.Clients.FuturesApi
     internal partial class BitunixSocketClientFuturesApi : SocketApiClient<BitunixEnvironment, BitunixAuthenticationProvider, BitunixCredentials>, IBitunixSocketClientFuturesApi
     {
         #region fields
+        private readonly BitunixSocketClientFuturesSharedApi _sharedApi;
+
         protected override ErrorMapping ErrorMapping => BitunixErrors.Errors;
         #endregion
 
@@ -44,6 +46,10 @@ namespace Bitunix.Net.Clients.FuturesApi
         internal BitunixSocketClientFuturesApi(ILoggerFactory? loggerFactory, BitunixSocketOptions options) :
             base(loggerFactory, BitunixExchange.Metadata.Id, options.Environment.FuturesSocketClientAddress!, options, options.FuturesOptions)
         {
+            _sharedApi = new BitunixSocketClientFuturesSharedApi(this);
+
+            AddSystemSubscription(new BitunixConnectSubscription(_logger));
+
             RegisterPeriodicQuery(
                 "Ping",
                 TimeSpan.FromSeconds(20),
@@ -59,6 +65,9 @@ namespace Bitunix.Net.Clients.FuturesApi
                 });
         }
         #endregion
+
+        /// <inheritdoc />
+        public IBitunixSocketClientFuturesSharedApi SharedApi => _sharedApi;
 
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(BitunixExchange._serializerContext);
@@ -92,7 +101,8 @@ namespace Bitunix.Net.Clients.FuturesApi
         /// <inheritdoc />
         public async Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(IEnumerable<string> symbols, int? limit, Action<DataEvent<BitunixOrderBookUpdate>> onMessage, CancellationToken ct = default)
         {
-            var subscription = new BitunixFuturesSubscription<BitunixOrderBookUpdate>(this, _logger, "depth_book" + limit, symbols.ToArray(), onMessage, false);
+            var topic = limit == null ? "depth_books" : "depth_book" + limit;
+            var subscription = new BitunixFuturesSubscription<BitunixOrderBookUpdate>(this, _logger, topic, symbols.ToArray(), onMessage, false);
             return await SubscribeAsync(BaseAddress.AppendPath("public") + "/", subscription, ct).ConfigureAwait(false);
         }
 
@@ -160,10 +170,15 @@ namespace Bitunix.Net.Clients.FuturesApi
             return await SubscribeAsync(BaseAddress.AppendPath("public") + "/", subscription, ct).ConfigureAwait(false);
         }
 
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToBalanceUpdatesAsync(Action<DataEvent<BitunixBalanceUpdate>> onMessage, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
+            Action<DataEvent<BitunixBalanceUpdate>>? onBalanceMessage = null,
+            Action<DataEvent<BitunixFuturesOrderUpdate>>? onOrderMessage = null,
+            Action<DataEvent<BitunixPositionUpdate>>? onPositionMessage = null,
+            Action<DataEvent<BitunixTpSlUpdate>>? onTpSlMessage = null,
+            CancellationToken ct = default)
         {
-            var subscription = new BitunixFuturesAuthSubscription<BitunixBalanceUpdate>(this, _logger, "tickers", onMessage);
-            return await SubscribeAsync(BaseAddress.AppendPath("public") + "/", subscription, ct).ConfigureAwait(false);
+            var subscription = new BitunixFuturesAuthSubscription(this, _logger,  onBalanceMessage, onOrderMessage, onPositionMessage, onTpSlMessage);
+            return await SubscribeAsync(BaseAddress.AppendPath("private") + "/", subscription, ct).ConfigureAwait(false);
         }
 
         /// <inheritdoc />

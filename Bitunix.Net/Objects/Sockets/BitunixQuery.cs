@@ -3,7 +3,6 @@ using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using System;
-using Bitunix.Net.Objects.Models;
 using Bitunix.Net.Objects.Internal;
 using CryptoExchange.Net.Clients;
 

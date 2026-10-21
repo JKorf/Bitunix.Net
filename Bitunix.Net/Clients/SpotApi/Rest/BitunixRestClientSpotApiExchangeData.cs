@@ -29,8 +29,11 @@ namespace Bitunix.Net.Clients.SpotApi
             var parameters = new Parameters(BitunixExchange._parameterSerializationSettings);
             parameters.Add("symbol", symbol);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/spot/v1/market/last_price", BitunixExchange.RateLimiter.Bitunix, 1, false);
-            var result = await _baseClient.SendAsync<decimal>(request, parameters, ct).ConfigureAwait(false);
-            return result;
+            var result = await _baseClient.SendAsync<decimal?>(request, parameters, ct).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<decimal>(result);
+
+            return HttpResult.Ok(result, result.Data.Value);
         }
 
         #endregion

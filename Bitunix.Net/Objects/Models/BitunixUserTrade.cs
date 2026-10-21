@@ -1,10 +1,6 @@
 ﻿using Bitunix.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Bitunix.Net.Objects.Models
 {
@@ -18,7 +14,6 @@ namespace Bitunix.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
-#warning is this trade id?
         /// <summary>
         /// ["<c>price</c>"] Price
         /// </summary>

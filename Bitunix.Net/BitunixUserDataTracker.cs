@@ -2,11 +2,6 @@ using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Trackers.UserData;
 using CryptoExchange.Net.Trackers.UserData.Objects;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Bitunix.Net.Interfaces.Clients;
 
 namespace Bitunix.Net
@@ -25,19 +20,19 @@ namespace Bitunix.Net
             SpotUserDataTrackerConfig? config = null,
             ExchangeParameters? exchangeParameters = null) : base(
                 logger,
-#warning TODO
-                null,
-                null,
+
+                restClient.SpotApi.SharedApi,
+                restClient.SpotApi.SharedApi,
                 null,
 
-                null,
-                null,
+                restClient.SpotApi.SharedApi,
+                restClient.SpotApi.SharedApi,
                 null,
 
                 null,
                 null,
                 userIdentifier,
-                config ?? new SpotUserDataTrackerConfig(),
+                (config ?? new SpotUserDataTrackerConfig()) with { TrackTrades = false },
                 exchangeParameters)
         {
 
@@ -61,20 +56,19 @@ namespace Bitunix.Net
             FuturesUserDataTrackerConfig? config = null,
             ExchangeParameters? exchangeParameters = null) :
             base(logger,
-#warning TODO
-                null,
-                null,
+                restClient.FuturesApi.SharedApi,
+                restClient.FuturesApi.SharedApi,
+                socketClient.FuturesApi.SharedApi,
+
+                restClient.FuturesApi.SharedApi,
+                restClient.FuturesApi.SharedApi,
+                socketClient.FuturesApi.SharedApi,
+
+                restClient.FuturesApi.SharedApi,
                 null,
 
-                null,
-                null,
-                null,
-
-                null,
-                null,
-
-                null,
-                null,
+                restClient.FuturesApi.SharedApi,
+                socketClient.FuturesApi.SharedApi,
                 userIdentifier,
                 config ?? new FuturesUserDataTrackerConfig(),
                 null,

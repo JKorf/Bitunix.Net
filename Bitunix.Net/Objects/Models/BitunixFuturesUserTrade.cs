@@ -52,6 +52,11 @@ public record BitunixFuturesUserTrade
     [JsonPropertyName("symbol")]
     public string Symbol { get; set; } = string.Empty;
     /// <summary>
+    /// ["<c>side</c>"] Side
+    /// </summary>
+    [JsonPropertyName("side")]
+    public OrderSide Side { get; set; }
+    /// <summary>
     /// ["<c>positionMode</c>"] Position mode
     /// </summary>
     [JsonPropertyName("positionMode")]
@@ -85,7 +90,7 @@ public record BitunixFuturesUserTrade
     /// ["<c>effect</c>"] Time in force
     /// </summary>
     [JsonPropertyName("effect")]
-    public TimeInForce TimeInForce { get; set; }
+    public TimeInForce? TimeInForce { get; set; }
     /// <summary>
     /// ["<c>reduceOnly</c>"] Reduce only
     /// </summary>

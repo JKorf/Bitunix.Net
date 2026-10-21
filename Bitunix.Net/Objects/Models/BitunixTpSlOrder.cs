@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
-using Bitunix.Net.Enums;
-
-namespace Bitunix.Net.Objects.Models;
+﻿namespace Bitunix.Net.Objects.Models;
 
 /// <summary>
 /// Tp/sl order

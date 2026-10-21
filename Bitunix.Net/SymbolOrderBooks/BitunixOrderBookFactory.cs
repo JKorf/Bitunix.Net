@@ -25,46 +25,27 @@ namespace Bitunix.Net.SymbolOrderBooks
         {
             _serviceProvider = serviceProvider;
             
-                        Futures = new OrderBookFactory<BitunixOrderBookOptions>(CreateFutures, Create);
-
-            Spot = new OrderBookFactory<BitunixOrderBookOptions>(CreateSpot, Create);
-
+            Futures = new OrderBookFactory<BitunixOrderBookOptions>(CreateFutures, Create);
         }
 
-                 /// <inheritdoc />
+        /// <inheritdoc />
         public IOrderBookFactory<BitunixOrderBookOptions> Futures { get; }
-
-         /// <inheritdoc />
-        public IOrderBookFactory<BitunixOrderBookOptions> Spot { get; }
 
 
         /// <inheritdoc />
         public ISymbolOrderBook Create(SharedSymbol symbol, Action<BitunixOrderBookOptions>? options = null)
         {
+            if (symbol.TradingMode == TradingMode.Spot)
+                throw new ArgumentException("Spot API does not support order book", nameof(symbol));
+
             var symbolName = symbol.GetSymbol(BitunixExchange.FormatSymbol);
-            throw new NotImplementedException();
-
-#warning TODO
-            //if (symbol.TradingMode == TradingMode.Spot)
-            //    return CreateSpot(symbolName, options);
-
-            //return Create(symbolName, options);
+            return CreateFutures(symbolName, options);
         }
 
-                 /// <inheritdoc />
+        /// <inheritdoc />
         public ISymbolOrderBook CreateFutures(string symbol, Action<BitunixOrderBookOptions>? options = null)
             => new BitunixFuturesSymbolOrderBook(symbol, options, 
                                                           _serviceProvider.GetRequiredService<ILoggerFactory>(),
-                                                          _serviceProvider.GetRequiredService<IBitunixRestClient>(),
                                                           _serviceProvider.GetRequiredService<IBitunixSocketClient>());
-
-         /// <inheritdoc />
-        public ISymbolOrderBook CreateSpot(string symbol, Action<BitunixOrderBookOptions>? options = null)
-            => new BitunixSpotSymbolOrderBook(symbol, options, 
-                                                          _serviceProvider.GetRequiredService<ILoggerFactory>(),
-                                                          _serviceProvider.GetRequiredService<IBitunixRestClient>(),
-                                                          _serviceProvider.GetRequiredService<IBitunixSocketClient>());
-
-
     }
 }

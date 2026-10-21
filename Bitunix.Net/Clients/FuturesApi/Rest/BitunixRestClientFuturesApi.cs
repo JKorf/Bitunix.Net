@@ -21,6 +21,7 @@ namespace Bitunix.Net.Clients.FuturesApi
     internal partial class BitunixRestClientFuturesApi : RestApiClient<BitunixEnvironment, BitunixAuthenticationProvider, BitunixCredentials>, IBitunixRestClientFuturesApi
     {
         #region fields 
+        private readonly BitunixRestClientFuturesSharedApi _sharedApi;
         protected override ErrorMapping ErrorMapping => BitunixErrors.Errors;
 
         /// <inheritdoc />
@@ -45,6 +46,8 @@ namespace Bitunix.Net.Clients.FuturesApi
             Account = new BitunixRestClientFuturesApiAccount(this);
             ExchangeData = new BitunixRestClientFuturesApiExchangeData(_logger, this);
             Trading = new BitunixRestClientFuturesApiTrading(_logger, this);
+
+            _sharedApi = new BitunixRestClientFuturesSharedApi(this);
         }
         #endregion
 
@@ -74,7 +77,6 @@ namespace Bitunix.Net.Clients.FuturesApi
             return HttpResult.Ok(result, result.Data.Data);
         }
 
-
         /// <inheritdoc />
         protected override Task<HttpResult<DateTime>> GetServerTimestampAsync()
             => throw new NotImplementedException();
@@ -82,6 +84,9 @@ namespace Bitunix.Net.Clients.FuturesApi
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null) 
             => BitunixExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverDate);
+
+        /// <inheritdoc />
+        public IBitunixRestClientFuturesSharedApi SharedApi => _sharedApi;
 
     }
 }

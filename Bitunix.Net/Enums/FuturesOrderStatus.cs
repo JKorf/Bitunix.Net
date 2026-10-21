@@ -23,7 +23,7 @@ public enum FuturesOrderStatus
     /// <summary>
     /// ["<c>NEW</c>"] New
     /// </summary>
-    [Map("NEW")]
+    [Map("NEW", "NEW_")]
     New,
     /// <summary>
     /// ["<c>PART_FILLED</c>"] Partially filled

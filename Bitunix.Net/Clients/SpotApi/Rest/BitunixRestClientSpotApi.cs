@@ -23,10 +23,10 @@ namespace Bitunix.Net.Clients.SpotApi
         #region fields 
         private readonly BitunixRestClientSpotSharedApi _sharedApi;
 
-        protected override ErrorMapping ErrorMapping => BitunixErrors.Errors;
+        protected override ErrorMapping ErrorMapping => BitunixErrors.SpotErrors;
 
         /// <inheritdoc />
-        protected override IRestMessageHandler MessageHandler { get; } = new BitunixRestSpotMessageHandler(BitunixErrors.Errors);
+        protected override IRestMessageHandler MessageHandler { get; } = new BitunixRestSpotMessageHandler(BitunixErrors.SpotErrors);
         #endregion
 
         #region Api clients

@@ -16,12 +16,6 @@ namespace Bitunix.Net.Interfaces
         IOrderBookFactory<BitunixOrderBookOptions> Futures { get; }
 
         /// <summary>
-        /// Spot order book factory methods
-        /// </summary>
-        IOrderBookFactory<BitunixOrderBookOptions> Spot { get; }
-
-
-        /// <summary>
         /// Create a SymbolOrderBook for the symbol
         /// </summary>
         /// <param name="symbol">The symbol</param>
@@ -33,11 +27,6 @@ namespace Bitunix.Net.Interfaces
         /// Create a new Futures local order book instance
         /// </summary>
         ISymbolOrderBook CreateFutures(string symbol, Action<BitunixOrderBookOptions>? options = null);
-
-        /// <summary>
-        /// Create a new Spot local order book instance
-        /// </summary>
-        ISymbolOrderBook CreateSpot(string symbol, Action<BitunixOrderBookOptions>? options = null);
 
     }
 }

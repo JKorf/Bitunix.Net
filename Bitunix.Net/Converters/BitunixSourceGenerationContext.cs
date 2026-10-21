@@ -1,6 +1,7 @@
 using Bitunix.Net.Objects.Internal;
 using Bitunix.Net.Objects.Models;
 using Bitunix.Net.Objects.Sockets;
+using Bitunix.Net.Objects.Sockets.Subscriptions;
 using CryptoExchange.Net.Objects;
 using System;
 using System.Text.Json.Serialization;
@@ -32,10 +33,10 @@ namespace Bitunix.Net.Converters
     [JsonSerializable(typeof(BitunixFuturesResponse<BitunixOpenTpSlOrder[]>))]
     [JsonSerializable(typeof(BitunixFuturesResponse<BitunixMarginMode>))]
 
-    [JsonSerializable(typeof(BitunixFuturesSocketRequest))]
     [JsonSerializable(typeof(BitunixPingRequest))]
     [JsonSerializable(typeof(BitunixPingResponse))]
     [JsonSerializable(typeof(BitunixFuturesSocketParamRequest))]
+    [JsonSerializable(typeof(BitunixSocketConnectMessage))]
     [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixTickerUpdate>))]
     [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixOrderBookUpdate>))]
     [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixKlineUpdate>))]
@@ -43,10 +44,14 @@ namespace Bitunix.Net.Converters
     [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixTradeUpdate[]>))]
     [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixAggTickerUpdate[]>))]
     [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixBalanceUpdate>))]
+    [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixFuturesOrderUpdate>))]
+    [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixPositionUpdate>))]
+    [JsonSerializable(typeof(BitunixFuturesSocketUpdate<BitunixTpSlUpdate>))]
 
     [JsonSerializable(typeof(BitunixFuturesCancelRequest[]))]
 
     [JsonSerializable(typeof(BitunixResponse<decimal>))]
+    [JsonSerializable(typeof(BitunixResponse<decimal?>))]
     [JsonSerializable(typeof(BitunixResponse<string>))]
     [JsonSerializable(typeof(BitunixResponse<BitunixOrderBook>))]
     [JsonSerializable(typeof(BitunixResponse<BitunixKline[]>))]

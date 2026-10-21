@@ -7,7 +7,7 @@ using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace Bitunix.Net.Objects.Sockets.Subscriptions
 {
@@ -18,12 +18,12 @@ namespace Bitunix.Net.Objects.Sockets.Subscriptions
         private readonly SocketApiClient _client;
 
         private readonly string _channel;
-        private readonly string[] _symbols;
+        private readonly string[]? _symbols;
 
         /// <summary>
         /// ctor
         /// </summary>
-        public BitunixFuturesSubscription(SocketApiClient client, ILogger logger, string channel, string[] symbols, Action<DataEvent<T>> handler, bool auth, bool registerTopicFilters = true) : base(logger, auth)
+        public BitunixFuturesSubscription(SocketApiClient client, ILogger logger, string channel, string[]? symbols, Action<DataEvent<T>> handler, bool auth, bool registerTopicFilters = true) : base(logger, auth)
         {
             _client = client;
             _handler = handler;
@@ -31,8 +31,8 @@ namespace Bitunix.Net.Objects.Sockets.Subscriptions
             _channel = channel;
             _symbols = symbols;
 
-            if (registerTopicFilters)
-                MessageRouter = MessageRouter.CreateForEvent<BitunixFuturesSocketUpdate<T>>(channel, symbols, DoHandleMessage);
+            if (registerTopicFilters && symbols != null)
+                MessageRouter = MessageRouter.CreateForEvent<BitunixFuturesSocketUpdate<T>>(channel, symbols!, DoHandleMessage);
             else
                 MessageRouter = MessageRouter.CreateForEvent<BitunixFuturesSocketUpdate<T>>(channel, DoHandleMessage);
         }
@@ -40,28 +40,42 @@ namespace Bitunix.Net.Objects.Sockets.Subscriptions
         /// <inheritdoc />
         protected override Query? GetSubQuery(SocketConnection connection)
         {
-            return new BitunixFuturesQuery<object>(_client, new Internal.BitunixFuturesSocketRequest
+            return new BitunixFuturesQuery<object>(_client, new Internal.BitunixFuturesSocketParamRequest
             {
                 Operation = "subscribe",
-                Parameters = _symbols.Select(x => new BitunixFuturesChannel
-                {
-                    Channel = _channel,
-                    Symbol = x
-                }).ToArray()
+                Parameters = GetQueryParameters(_channel, _symbols)
             }, Authenticated);
+        }
+
+        private static Parameters[] GetQueryParameters(string channel, string[]? symbols)
+        {
+            var result = new List<Parameters>();
+            if (symbols?.Length > 0)
+            {
+                foreach(var symbol in symbols)
+                {
+                    var channelSub = new Parameters(BitunixExchange._parameterSerializationSettings);
+                    channelSub.Add("ch", channel);
+                    channelSub.Add("symbol", symbol);
+                    result.Add(channelSub);
+                }
+            }
+            else
+            {
+                var channelSub = new Parameters(BitunixExchange._parameterSerializationSettings);
+                channelSub.Add("ch", channel);
+                result.Add(channelSub);
+            }
+            return result.ToArray();
         }
 
         /// <inheritdoc />
         protected override Query? GetUnsubQuery(SocketConnection connection)
         {
-            return new BitunixFuturesQuery<object>(_client, new Internal.BitunixFuturesSocketRequest
+            return new BitunixFuturesQuery<object>(_client, new Internal.BitunixFuturesSocketParamRequest
             {
                 Operation = "unsubscribe",
-                Parameters = _symbols.Select(x => new BitunixFuturesChannel
-                {
-                    Channel = _channel,
-                    Symbol = x
-                }).ToArray()
+                Parameters = GetQueryParameters(_channel, _symbols)
             }, Authenticated);
         }
 

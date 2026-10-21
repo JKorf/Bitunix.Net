@@ -1,8 +1,5 @@
 using CryptoExchange.Net;
-using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.Interfaces.Clients;
-using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,6 +12,7 @@ using Bitunix.Net.Interfaces;
 using Bitunix.Net.Interfaces.Clients;
 using Bitunix.Net.Objects.Options;
 using Bitunix.Net.SymbolOrderBooks;
+using CryptoExchange.Net.SharedApis;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -87,13 +85,14 @@ namespace Microsoft.Extensions.DependencyInjection
                     x.GetRequiredService<IOptions<BitunixRestOptions>>(),
                     x.GetRequiredService<IOptions<BitunixSocketOptions>>()));
 
-
-#warning TODO
-            //services.RegisterSharedApiClient<
-            //    IBitunixSharedApiClient,
-            //    BitunixSharedApiClient>(sharedApis => sharedApis
-            //        .Add(client => client.UnifiedRest)
-            //        );
+            services.RegisterSharedApiClient<
+                IBitunixSharedApiClient,
+                BitunixSharedApiClient>(sharedApis => sharedApis
+                    .Add(client => client.SpotRest)
+                    .Add(client => client.SpotSocket)
+                    .Add(client => client.FuturesRest)
+                    .Add(client => client.FuturesSocket)
+                    );
 
             return services;
         }

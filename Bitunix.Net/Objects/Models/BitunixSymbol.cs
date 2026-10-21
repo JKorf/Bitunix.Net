@@ -1,6 +1,4 @@
-﻿using Bitunix.Net.Enums;
-using CryptoExchange.Net.Converters.SystemTextJson;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
 
 namespace Bitunix.Net.Objects.Models;

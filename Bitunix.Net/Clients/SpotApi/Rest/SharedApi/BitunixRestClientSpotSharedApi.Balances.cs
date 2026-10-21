@@ -1,9 +1,6 @@
 ﻿using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.SharedApis;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +8,6 @@ namespace Bitunix.Net.Clients.SpotApi
 {
     internal partial class BitunixRestClientSpotSharedApi
 	{
-
 		#region Get Balance
 		public GetBalancesOptions GetBalancesOptions { get; } = new GetBalancesOptions(_exchangeName, AccountTypeFilter.Spot);
 
@@ -32,6 +28,5 @@ namespace Bitunix.Net.Clients.SpotApi
 		}
 
 		#endregion
-
 	}
 }

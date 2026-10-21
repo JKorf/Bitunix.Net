@@ -3,7 +3,6 @@ using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using System;
-using Bitunix.Net.Objects.Models;
 using Bitunix.Net.Objects.Internal;
 using CryptoExchange.Net.Clients;
 
@@ -13,7 +12,7 @@ namespace Bitunix.Net.Objects.Sockets
     {
         private readonly SocketApiClient _client;
 
-        public BitunixFuturesQuery(SocketApiClient client, BitunixFuturesSocketRequest request, bool authenticated, int weight = 1) : base(request, authenticated, weight)
+        public BitunixFuturesQuery(SocketApiClient client, BitunixFuturesSocketParamRequest request, bool authenticated, int weight = 1) : base(request, authenticated, weight)
         {
             _client = client;
 

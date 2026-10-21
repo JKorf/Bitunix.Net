@@ -34,6 +34,18 @@ namespace Bitunix.Net.Clients.MessageHandlers
                     new PropertyFieldReference("ping"),
                 ],
                 TypeIdentifierCallback = x => x.FieldValue("ping")!,
+            },
+            new MessageTypeDefinition {
+                Fields = [
+                    new PropertyFieldReference("op").WithEqualConstraint("login"),
+                ],
+                StaticIdentifier = "login",
+            },
+            new MessageTypeDefinition {
+                Fields = [
+                    new PropertyFieldReference("op").WithEqualConstraint("connect"),
+                ],
+                StaticIdentifier = "connect",
             }
         ];
     }
