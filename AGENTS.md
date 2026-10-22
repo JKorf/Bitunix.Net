@@ -90,7 +90,7 @@ var order = await client.SpotApi.Trading.PlaceOrderAsync(
     price: 2000m);
 
 if (!order.Success) { Console.WriteLine(order.Error); return; }
-Console.WriteLine(order.Data.Id);
+Console.WriteLine(order.Data.OrderId);
 ```
 
 Spot orders support only the parameters exposed by the interface: symbol, side, type, quantity, and optional price. Do not add a time-in-force or client-order-id parameter to the direct Spot method.
@@ -117,7 +117,7 @@ var order = await client.FuturesApi.Trading.PlaceOrderAsync(
     timeInForce: TimeInForce.GoodTillCanceled);
 
 if (!order.Success) { Console.WriteLine(order.Error); return; }
-Console.WriteLine(order.Data.Id);
+Console.WriteLine(order.Data.OrderId);
 ```
 
 `tradeSide` is required by Bitunix in hedge mode. Use `TradeSide.Open` or `TradeSide.Close` as appropriate. The Futures method also supports `positionId`, `clientOrderId`, `reduceOnly`, and inline take-profit/stop-loss parameters.

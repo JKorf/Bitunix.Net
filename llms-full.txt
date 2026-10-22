@@ -241,7 +241,7 @@ if (!order.Success)
     return;
 }
 
-Console.WriteLine(order.Data.Id);
+Console.WriteLine(order.Data.OrderId);
 ```
 
 ## Futures REST Map
@@ -339,7 +339,7 @@ if (!order.Success)
     return;
 }
 
-Console.WriteLine(order.Data.Id);
+Console.WriteLine(order.Data.OrderId);
 ```
 
 `tradeSide` expresses open versus close intent and is required by Bitunix in hedge mode. `PositionMode.HedgeMode` and `PositionMode.OneWay` are the available position modes. `MarginMode.Isolated` and `MarginMode.Cross` are the available margin modes. Use `reduceOnly: true` where appropriate when closing risk in one-way mode.
@@ -369,7 +369,7 @@ if (!result.Success)
     return;
 }
 
-Console.WriteLine(result.Data.Id);
+Console.WriteLine(result.Data.OrderId);
 ```
 
 `PlaceOrderAsync` returns `QueryResult<BitunixOrderResult>`. The cancellation methods return `QueryResult`. There is no `UpdateSubscription` to store or unsubscribe.
