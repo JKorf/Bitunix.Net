@@ -1,0 +1,14 @@
+> { "op": "subscribe", "args": [{"ch": "price", "symbol": "ETHUSDT"}] }
+= 
+{ 
+  "ch": "price",                   
+  "symbol": "ETHUSDT",
+  "ts": 1732178884994,
+  "data":{
+        "ip": "0.0010",                 
+        "mp": "10000",                  
+        "fr": "0.013461" ,                    
+        "ft": "2024-12-04T11:00:00Z",                 
+        "nft": "2024-12-04T12:00:00Z"                           
+   }   
+}

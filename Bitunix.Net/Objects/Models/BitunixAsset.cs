@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Bitunix.Net.Enums;
+using System.Text.Json.Serialization;
 
 namespace Bitunix.Net.Objects.Models;
 
@@ -88,7 +89,7 @@ public record BitunixAssetNetwork
     /// ["<c>requireMemo</c>"] Require memo
     /// </summary>
     [JsonPropertyName("requireMemo")]
-    public bool RequireMemo { get; set; }
+    public MemoRequired RequireMemo { get; set; }
     /// <summary>
     /// ["<c>chain</c>"] Network
     /// </summary>

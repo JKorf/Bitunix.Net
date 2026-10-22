@@ -41,8 +41,6 @@ namespace Bitunix.Net.Clients.MessageHandlers
             if (error != null)
                 return error;
 
-#warning check
-
             int? code = document!.RootElement.TryGetProperty("code", out var codeProp) ? codeProp.GetInt32() : null;
             string? msg = document.RootElement.TryGetProperty("msg", out var msgProp) ? msgProp.GetString() : null;
             if (msg == null)

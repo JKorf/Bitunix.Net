@@ -1,0 +1,15 @@
+> { "op": "subscribe", "args": [{"ch": "market_kline_60min", "symbol": "ETHUSDT"}] }
+= 
+{ 
+  "ch": "market_kline_60min",
+  "symbol": "ETHUSDT",
+  "ts": 1775541412718,                   
+  "data":{
+      "o": "68581.4",                     
+      "c": "68583.4",                     
+      "h": "68590",                     
+      "l": "68579.5",                    
+      "b": "5.2395",                     
+      "q": "359348.14078"                         
+  }
+}

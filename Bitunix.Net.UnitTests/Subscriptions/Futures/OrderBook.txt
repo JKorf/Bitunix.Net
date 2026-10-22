@@ -1,0 +1,21 @@
+> { "op": "subscribe", "args": [{"ch": "depth_book5", "symbol": "ETHUSDT"}] }
+= 
+{
+  "ch": "depth_book5",               
+  "symbol": "ETHUSDT",
+  "ts": 1775541541009,
+  "data":{                               
+        "b":[                            
+             [
+                  "7403.89",             
+                  "0.002"                
+             ]
+            ],
+        "a": [                           
+             [
+                 "7405.96",              
+                 "3.340"                 
+             ]
+        ]
+   }
+}

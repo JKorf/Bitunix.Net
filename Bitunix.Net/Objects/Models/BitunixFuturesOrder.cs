@@ -1,6 +1,7 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using Bitunix.Net.Converters;
 using Bitunix.Net.Enums;
+using System;
+using System.Text.Json.Serialization;
 
 namespace Bitunix.Net.Objects.Models;
 
@@ -45,7 +46,13 @@ public record BitunixFuturesOrder
     /// ["<c>price</c>"] Price
     /// </summary>
     [JsonPropertyName("price")]
+    [JsonConverter(typeof(MarketPriceConverter))] // Price is either a decimal value or 'MARKET' string
     public decimal? Price { get; set; }
+    /// <summary>
+    /// ["<c>avgPrice</c>"] Average price
+    /// </summary>
+    [JsonPropertyName("avgPrice")]
+    public decimal? AveragePrice { get; set; }
     /// <summary>
     /// ["<c>symbol</c>"] Symbol
     /// </summary>

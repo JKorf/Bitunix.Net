@@ -419,9 +419,9 @@ namespace Bitunix.Net.Interfaces.Clients.FuturesApi
         /// <param name="skip">["<c>skip</c>"] Skip rows</param>
         /// <param name="limit">["<c>limit</c>"] Max number of results, max 100</param>
         /// <param name="ct">Cancellation token</param>
-        Task<HttpResult<BitunixOpenTpSlOrder[]>> GetOpenTpSlOrdersAsync(
-            string symbol,
-            string id,
+        Task<HttpResult<BitunixTpSlOrder[]>> GetOpenTpSlOrdersAsync(
+            string? symbol = null,
+            string? id = null,
             int? skip = null,
             int? limit = null,
             CancellationToken ct = default);
@@ -441,7 +441,7 @@ namespace Bitunix.Net.Interfaces.Clients.FuturesApi
         /// <param name="skip">["<c>skip</c>"] Skip rows</param>
         /// <param name="limit">["<c>limit</c>"] Max number of results, max 100</param>
         /// <param name="ct">Cancellation token</param>
-        Task<HttpResult<BitunixOpenTpSlOrder[]>> GetTpSlOrderHistoryAsync(
+        Task<HttpResult<BitunixTpSlOrderPage>> GetTpSlOrderHistoryAsync(
             string? symbol = null,
             DateTime? startTime = null,
             DateTime? endTime = null,

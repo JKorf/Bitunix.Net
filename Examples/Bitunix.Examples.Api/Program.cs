@@ -26,20 +26,18 @@ app.UseHttpsRedirection();
 // Map the endpoints and inject the rest client
 app.MapGet("/{Symbol}", async ([FromServices] IBitunixRestClient client, string symbol) =>
 {
-    var result = await client.SpotApi.ExchangeData.GetTickerAsync(symbol);
+    var result = await client.SpotApi.ExchangeData.GetLastPriceAsync(symbol);
     return result.Success
-        ? Results.Ok(result.Data.LastPrice)
+        ? Results.Ok(result.Data)
         : Results.Problem(result.Error?.Message, statusCode: 502);
-})
-.WithOpenApi();
+});
 
 app.MapGet("/Balances", async ([FromServices] IBitunixRestClient client) =>
 {
-    var result = await client.SpotApi.Account.GetAccountInfoAsync();
+    var result = await client.SpotApi.Account.GetBalancesAsync();
     return result.Success
-        ? Results.Ok(result.Data.Balances)
+        ? Results.Ok(result.Data)
         : Results.Problem(result.Error?.Message, statusCode: 502);
-})
-.WithOpenApi();
+});
 
 app.Run();

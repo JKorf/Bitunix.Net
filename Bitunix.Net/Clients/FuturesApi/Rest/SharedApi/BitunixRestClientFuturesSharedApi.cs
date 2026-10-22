@@ -50,10 +50,15 @@ namespace Bitunix.Net.Clients.FuturesApi
                 GetFuturesUserTradeHistoryOptions,
                 GetFuturesOrderTradesOptions,
                 CancelFuturesOrderOptions,
+                CancelFuturesOrderByClientOrderIdOptions,
                 CancelAllFuturesOrdersOptions,
                 CancelAllFuturesSymbolOrdersOptions,
                 EditFuturesOrderOptions,
-                EditFuturesOrderByClientOrderIdOptions
+                EditFuturesOrderByClientOrderIdOptions,
+                GetPositionHistoryOptions,
+                GetPositionsOptions,
+                SetFuturesTpSlOptions,
+                CancelFuturesTpSlOptions
                 );
 
         }

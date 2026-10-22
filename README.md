@@ -64,8 +64,8 @@ The NuGet package files are added along side the source with the latest GitHub r
 ```csharp
 // Get the ETH/USDT ticker via rest request
 var restClient = new BitunixRestClient();
-var tickerResult = await restClient.SpotApi.ExchangeData.GetTickerAsync("ETHUSDT");
-var lastPrice = tickerResult.Data.LastPrice;
+var tickerResult = await restClient.SpotApi.ExchangeData.GetLastPriceAsync("ETHUSDT");
+var lastPrice = tickerResult.Data;
 ```
 
 *Place order:*
@@ -75,13 +75,13 @@ var restClient = new BitunixRestClient(opts => {
 });
 
 // Place Limit order to go long 0.1 for ETH at 2000
-var orderResult = await restClient.UsdtFuturesApi.Trading.PlaceOrderAsync(
-    "ETH_USDT",
+var orderResult = await restClient.FuturesApi.Trading.PlaceOrderAsync(
+    "ETHUSDT",
     OrderSide.Buy,
     OrderType.Limit,
     0.1m,
-    PositionSide.Long,
-    2000
+    2000m,
+    TradeSide.Open
     );
 ```
 
@@ -89,9 +89,9 @@ var orderResult = await restClient.UsdtFuturesApi.Trading.PlaceOrderAsync(
 ```csharp
 // Subscribe to ETH/USDT ticker updates via the websocket API
 var socketClient = new BitunixSocketClient();
-var tickerSubscriptionResult = socketClient.SpotApi.SubscribeToTickerUpdatesAsync("ETHUSDT", (update) => 
+var tickerSubscriptionResult = socketClient.FuturesApi.SubscribeToTickerUpdatesAsync("ETHUSDT", (update) =>
 {
-  var lastPrice = update.Data.LastPrice;
+    var lastPrice = update.Data.LastPrice;
 });
 ```
 
@@ -113,9 +113,34 @@ See [cryptoexchange-skills-hub](https://github.com/JKorf/cryptoexchange-skills-h
 
 ## Shared / unified API
 
-The CryptoExchange.Net [Shared APIs](https://cryptoexchange.jkorf.dev/docs/shared-api) provide exchange-agnostic, unified interfaces for common operations such as retrieving tickers, order books and balances, placing orders, and subscribing to market updates.
+The CryptoExchange.Net [Shared API V2](https://cryptoexchange.jkorf.dev/docs/shared-api) provides exchange-agnostic interfaces and models for common operations such as retrieving tickers, order books and balances, placing orders, and subscribing to market updates.
 
-This allows the same application code to work with different exchange libraries. The supported Toobit API surfaces expose their shared functionality through a `SharedClient` property. Because support differs between exchanges and API surfaces, call `Discover()` to inspect the available trading modes, environments, endpoints, and subscriptions at runtime.
+V2 uses a strict interface per capability. The `SharedApi` property on each Bitunix API surface therefore exposes only the operations or subscriptions that surface actually supports. `IBitunixSharedApiClient` groups the `SpotRest`, `FuturesRest`, `SpotSocket`, and `FuturesSocket` surfaces for dependency injection and runtime capability lookup.
+
+### Access a strict capability
+
+```csharp
+using CryptoExchange.Net.SharedApis;
+using Bitunix.Net.Clients;
+
+using var restClient = new BitunixRestClient();
+IGetTickerRest tickerClient = restClient.SpotApi.SharedApi;
+
+var symbol = new SharedSymbol(TradingMode.Spot, "ETH", "USDT");
+var result = await tickerClient.GetTickerAsync(
+    new GetTickerRequest(symbol));
+
+if (!result.Success)
+{
+    Console.WriteLine(result.Error);
+    return;
+}
+
+Console.WriteLine(result.Data.LastPrice);
+```
+
+The request and response models belong to `CryptoExchange.Net.SharedApis`, so the same operation can accept another exchange's `IGetTickerRest` implementation. When using dependency injection, inject `ITP_RP_EXCHANGESharedApiClient` to access all Bitunix Shared API surfaces or inject a capability such as `IGetTickerRest` directly. Use `GetCapability` on the aggregate when the operation, transport, or trading mode is selected at runtime.
+
 
 ### Supported shared interfaces
 
@@ -154,7 +179,7 @@ if (!result.Success)
 Console.WriteLine(result.Data.LastPrice);
 ```
 
-The request and response models belong to `CryptoExchange.Net.SharedApis`, so the same pattern can be used with another exchange's `SharedClient`.
+The request and response models belong to `CryptoExchange.Net.SharedApis`, so the same operation can accept another exchange's `IGetTickerRest` implementation. When using dependency injection, inject `IBitunixSharedApiClient` to access all Bitunix Shared API surfaces or inject a capability such as `IGetTickerRest` directly. Use `GetCapability` on the aggregate when the operation, transport, or trading mode is selected at runtime.
 
 ## CryptoExchange.Net
 Bitunix.Net is based on the [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net) base library. Other exchange API implementations based on the CryptoExchange.Net base library are available and follow the same logic.
@@ -202,17 +227,6 @@ When using multiple of these API's the [CryptoClients.Net](https://github.com/JK
 ## Discord
 [![Nuget version](https://img.shields.io/discord/847020490588422145?style=for-the-badge)](https://discord.gg/MSpeEtSY8t)  
 A Discord server is available [here](https://discord.gg/MSpeEtSY8t). For discussion and/or questions around the CryptoExchange.Net and implementation libraries, feel free to join.
-
-## Supported functionality
-
-### Spot
-|API|Supported|Location|
-|--|--:|--|
-|TODO|✓|`restClient.SpotApi.Account`|
-### Futures
-|API|Supported|Location|
-|--|--:|--|
-|TODO|✓|`restClient.FuturesApi.ExchangeData`|
 
 ## Support the project
 Any support is greatly appreciated.

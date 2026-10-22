@@ -119,6 +119,7 @@ namespace Bitunix.Net.Clients.FuturesApi
                 ParseOrderStatus(order.Data),
                 order.Data.CreateTime)
             {
+                AveragePrice = order.Data.AveragePrice,
                 ClientOrderId = order.Data.ClientOrderId,
                 OrderPrice = order.Data.Price == 0 ? null : order.Data.Price,
                 OrderQuantity = new SharedOrderQuantity(order.Data.Quantity),
@@ -198,6 +199,7 @@ namespace Bitunix.Net.Clients.FuturesApi
                 ParseOrderStatus(order.Data),
                 order.Data.CreateTime)
             {
+                AveragePrice = order.Data.AveragePrice,
                 ClientOrderId = order.Data.ClientOrderId,
                 OrderPrice = order.Data.Price == 0 ? null : order.Data.Price,
                 OrderQuantity = new SharedOrderQuantity(order.Data.Quantity),
@@ -238,6 +240,7 @@ namespace Bitunix.Net.Clients.FuturesApi
                 ParseOrderStatus(x),
                 x.CreateTime)
             {
+                AveragePrice = x.AveragePrice,
                 ClientOrderId = x.ClientOrderId,
                 OrderPrice = x.Price == 0 ? null : x.Price,
                 OrderQuantity = new SharedOrderQuantity(x.Quantity),
@@ -305,6 +308,7 @@ namespace Bitunix.Net.Clients.FuturesApi
                 ParseOrderStatus(x),
                 x.CreateTime)
             {
+                AveragePrice = x.AveragePrice,
                 ClientOrderId = x.ClientOrderId,
                 OrderPrice = x.Price == 0 ? null : x.Price,
                 OrderQuantity = new SharedOrderQuantity(x.Quantity),

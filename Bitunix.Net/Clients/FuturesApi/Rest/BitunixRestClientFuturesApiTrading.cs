@@ -460,9 +460,9 @@ namespace Bitunix.Net.Clients.FuturesApi
         #region Get Open Tp Sl Orders
 
         /// <inheritdoc />
-        public async Task<HttpResult<BitunixOpenTpSlOrder[]>> GetOpenTpSlOrdersAsync(
-            string symbol,
-            string id,
+        public async Task<HttpResult<BitunixTpSlOrder[]>> GetOpenTpSlOrdersAsync(
+            string? symbol = null,
+            string? id = null,
             int? skip = null,
             int? limit = null,
             CancellationToken ct = default)
@@ -474,7 +474,7 @@ namespace Bitunix.Net.Clients.FuturesApi
             parameters.Add("limit", limit);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/futures/tpsl/get_pending_orders", BitunixExchange.RateLimiter.Bitunix, 1, true,
                 limitGuard: new SingleLimitGuard(10, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding, keySelector: SingleLimitGuard.PerApiKey));
-            var result = await _baseClient.SendAsync<BitunixOpenTpSlOrder[]>(request, parameters, ct).ConfigureAwait(false);
+            var result = await _baseClient.SendAsync<BitunixTpSlOrder[]>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
@@ -483,7 +483,7 @@ namespace Bitunix.Net.Clients.FuturesApi
         #region Get Tp Sl Order History
 
         /// <inheritdoc />
-        public async Task<HttpResult<BitunixOpenTpSlOrder[]>> GetTpSlOrderHistoryAsync(
+        public async Task<HttpResult<BitunixTpSlOrderPage>> GetTpSlOrderHistoryAsync(
             string? symbol = null,
             DateTime? startTime = null,
             DateTime? endTime = null,
@@ -491,8 +491,6 @@ namespace Bitunix.Net.Clients.FuturesApi
             int? limit = null,
             CancellationToken ct = default)
         {
-#warning check what is returned
-
             var parameters = new Parameters(BitunixExchange._parameterSerializationSettings);
             parameters.Add("symbol", symbol);
             parameters.Add("startTime", startTime);
@@ -501,7 +499,7 @@ namespace Bitunix.Net.Clients.FuturesApi
             parameters.Add("limit", limit);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/futures/tpsl/get_history_orders", BitunixExchange.RateLimiter.Bitunix, 1, true, 
                 limitGuard: new SingleLimitGuard(10, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding, keySelector: SingleLimitGuard.PerApiKey));
-            var result = await _baseClient.SendAsync<BitunixOpenTpSlOrder[]>(request, parameters, ct).ConfigureAwait(false);
+            var result = await _baseClient.SendAsync<BitunixTpSlOrderPage>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 

@@ -27,7 +27,7 @@ public record BitunixFundingRate
     /// ["<c>indexPrice</c>"] Index price
     /// </summary>
     [JsonPropertyName("indexPrice")]
-    public decimal IndexPrice { get; set; }
+    public decimal? IndexPrice { get; set; }
     /// <summary>
     /// ["<c>fundingRate</c>"] Funding rate
     /// </summary>

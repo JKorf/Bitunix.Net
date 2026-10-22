@@ -16,6 +16,11 @@ public enum FuturesSymbolStatus
     [Map("OPEN")]
     Open,
     /// <summary>
+    /// ["<c>PREVIEW</c>"] Preview
+    /// </summary>
+    [Map("PREVIEW")]
+    Preview,
+    /// <summary>
     /// ["<c>CANCEL_ONLY</c>"] Only canceling orders allowed
     /// </summary>
     [Map("CANCEL_ONLY")]

@@ -46,8 +46,7 @@ namespace Bitunix.Net.Clients.SpotApi
                 request.Side == SharedOrderSide.Buy ? OrderSide.Buy : OrderSide.Sell,
                 (request.OrderType == SharedOrderType.Limit || request.OrderType == SharedOrderType.LimitMaker) ? OrderType.Limit : OrderType.Market,
                 quantity: (request.OrderType == SharedOrderType.Market && request.Side == SharedOrderSide.Buy ? request.Quantity?.QuantityInQuoteAsset : request.Quantity?.QuantityInBaseAsset) ?? 0,
-#warning market order?
-                price: request.Price ?? 0,
+                price: request.Price,
                 ct: ct).ConfigureAwait(false);
 
             if (!result.Success)

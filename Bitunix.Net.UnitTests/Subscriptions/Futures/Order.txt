@@ -1,0 +1,5 @@
+< {"op":"connect","data":{"result":true}}
+> { "op": "login", "args": [] }
+< {"op":"login","data":{"nonce":"","result":true}}
+= 
+{"ch":"balance","ts":1792656179891,"data":{"coin":"USDT","available":"44.834533612","frozen":"9.9176","isolationFrozen":"0","crossFrozen":"9.9176","margin":"0","isolationMargin":"0","crossMargin":"0","expMoney":"5"}}

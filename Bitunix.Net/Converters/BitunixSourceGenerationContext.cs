@@ -30,8 +30,9 @@ namespace Bitunix.Net.Converters
     [JsonSerializable(typeof(BitunixFuturesResponse<BitunixPositionTier[]>))]
     [JsonSerializable(typeof(BitunixFuturesResponse<BitunixPosition[]>))]
     [JsonSerializable(typeof(BitunixFuturesResponse<BitunixPositionHistoryPage>))]
-    [JsonSerializable(typeof(BitunixFuturesResponse<BitunixOpenTpSlOrder[]>))]
+    [JsonSerializable(typeof(BitunixFuturesResponse<BitunixTpSlOrder[]>))]
     [JsonSerializable(typeof(BitunixFuturesResponse<BitunixMarginMode>))]
+    [JsonSerializable(typeof(BitunixFuturesResponse<BitunixTpSlOrderPage>))]
 
     [JsonSerializable(typeof(BitunixPingRequest))]
     [JsonSerializable(typeof(BitunixPingResponse))]

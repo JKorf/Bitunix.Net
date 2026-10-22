@@ -64,7 +64,7 @@ namespace Bitunix.Net.Clients.SpotApi
             OrderSide orderSide,
             OrderType orderType,
             decimal quantity,
-            decimal price,
+            decimal? price = null,
             CancellationToken ct = default)
         {
             if (AuthenticationProvider == null)
@@ -75,7 +75,7 @@ namespace Bitunix.Net.Clients.SpotApi
             parameters.Add("side", orderSide);
             parameters.Add("type", orderType);
             parameters.Add("volume", quantity);
-            parameters.Add("price", price);
+            parameters.Add("price", price ?? 0);
             var request = new BitunixSocketRequest
             {
                 Id = ExchangeHelpers.NextId().ToString(),

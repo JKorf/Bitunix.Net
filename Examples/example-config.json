@@ -4,8 +4,7 @@
 		// API credentials for both REST and Websocket client
 		"ApiCredentials": {
 			"Key": "APIKEY",
-			"Secret": "APISECRET",
-			"Pass": "PASS"
+			"Secret": "APISECRET"
 		},
 		// Set the environment by name
 		"Environment": {

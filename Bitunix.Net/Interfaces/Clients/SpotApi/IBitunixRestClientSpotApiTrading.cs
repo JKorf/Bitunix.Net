@@ -33,7 +33,7 @@ namespace Bitunix.Net.Interfaces.Clients.SpotApi
             OrderSide orderSide,
             OrderType orderType,
             decimal quantity,
-            decimal price,
+            decimal? price = null,
             CancellationToken ct = default);
 
         /// <summary>

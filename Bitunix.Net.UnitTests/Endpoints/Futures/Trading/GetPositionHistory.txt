@@ -2,4 +2,4 @@ GET
 /api/v1/futures/position/get_history_positions
 true
 UriParams: {}
-{"code":0,"data":{"positionList":[{"positionId":"12345678","symbol":"BTCUSDT","maxQty":"0.5","entryPrice":"60000","closePrice":"61000","liqQty":"0","side":"LONG","positionMode":"HEDGE","marginMode":"ISOLATION","leverage":100,"fee":"0.1","funding":"-0.2","realizedPNL":"102.9","liqPrice":"22209","ctime":1691382137448,"mtime":1691382137448}],"total":12},"msg":"Success"}
+{"code":0,"data":{"positionList":[{"positionId":"12345678","symbol":"BTCUSDT","maxQty":"0.5","entryPrice":"60000","closePrice":"61000","liqQty":"0","side":"BUY","positionMode":"HEDGE","marginMode":"ISOLATION","leverage":100,"fee":"0.1","funding":"-0.2","realizedPNL":"102.9","liqPrice":"22209","ctime":1691382137448,"mtime":1691382137448}],"total":12},"msg":"Success"}

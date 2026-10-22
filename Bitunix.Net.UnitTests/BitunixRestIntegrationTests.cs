@@ -43,6 +43,18 @@ namespace Bitunix.Net.UnitTests
         }
 
         [Test]
+        public async Task TestSpotAccountData()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(client => client.SpotApi.Account.GetBalancesAsync(CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.SpotApi.Account.GetWithdrawalHistoryAsync(default, default, "ETH", default, default, default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.SpotApi.Account.GetDepositsAsync(default, "USDT", default, default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.SpotApi.Account.GetDepositAddressAsync("USDT", "Tron (TRC-20)", CancellationToken.None), true, true, "data");
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
         public async Task TestSpotExchangeData()
         {
             var warnings = new List<Exception>();
@@ -57,6 +69,58 @@ namespace Bitunix.Net.UnitTests
                 Assert.Warn(warning.Message);
         }
 
-#warning Other topics
+        [Test]
+        public async Task TestSpotTradingData()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(client => client.SpotApi.Trading.GetOrderHistoryAsync("ETHUSDT", default, default, default, default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.SpotApi.Trading.GetOpenOrdersAsync("ETHUSDT", CancellationToken.None), true, true, "data");
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
+        public async Task TestFuturesAccountData()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(client => client.FuturesApi.Account.GetBalancesAsync("USDT", CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Account.GetTradingSettingsAsync(default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Account.GetPositionModeAsync(CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Account.GetLeverageMarginModeAsync("ETHUSDT", "USDT", CancellationToken.None), true, true, "data");
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
+        public async Task TestFuturesExchangeData()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetTickersAsync(default, CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetOrderBookAsync("ETHUSDT", default, CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetFundingRatesAsync(CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetFundingRateHistoryAsync("ETHUSDT", default, default, default, CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetFundingRateAsync("ETHUSDT", CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetKlinesAsync("ETHUSDT", default, default, default, default, default, CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetSymbolsAsync(default, CancellationToken.None), false, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.ExchangeData.GetPositionTiersAsync("ETHUSDT", CancellationToken.None), false, true, "data");
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
+        public async Task TestFuturesTradingData()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetOrderHistoryAsync(default, default, default, default, default, default, default, default, default, default, CancellationToken.None), true, true, "data", ignoreProperties: ["price"]);
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetOpenOrdersAsync(default, default, default, default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetUserTradesAsync(default, default, default, default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetPositionsAsync(default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetPositionHistoryAsync(default, default, default, default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetOpenTpSlOrdersAsync(default, default, default, default, CancellationToken.None), true, true, "data");
+            await RunAndCheckResult(client => client.FuturesApi.Trading.GetTpSlOrderHistoryAsync(default, default, default, default, default, CancellationToken.None), true, true, "data");
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
     }
 }

@@ -33,7 +33,7 @@ namespace Bitunix.Net.Clients.SpotApi
             OrderSide orderSide,
             OrderType orderType,
             decimal quantity,
-            decimal price,
+            decimal? price = null,
             CancellationToken ct = default)
         {
             var parameters = new Parameters(BitunixExchange._parameterSerializationSettings);
@@ -41,9 +41,18 @@ namespace Bitunix.Net.Clients.SpotApi
             parameters.Add("side", orderSide);
             parameters.Add("type", orderType);
             parameters.Add("volume", quantity);
-            parameters.Add("price", price);
+            parameters.Add("price", price ?? 0);
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/api/spot/v1/order/place_order", BitunixExchange.RateLimiter.Bitunix, 1, true);
             var result = await _baseClient.SendAsync<BitunixOrderResult>(request, parameters, ct).ConfigureAwait(false);
+            if (!result.Success)
+                return result;
+
+            if (!result.Data.Success)
+            {
+                return HttpResult.Fail<BitunixOrderResult>(result,
+                    new ServerError(result.Data.PlaceCode, _baseClient.GetErrorInfo(result.Data.PlaceCode, result.Data.PlaceMessage)));
+            }
+
             return result;
         }
 
