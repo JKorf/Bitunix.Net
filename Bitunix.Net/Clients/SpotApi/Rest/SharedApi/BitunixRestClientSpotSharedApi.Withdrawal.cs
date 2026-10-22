@@ -53,7 +53,7 @@ namespace Bitunix.Net.Clients.SpotApi
                        .Select(x =>
                            new SharedWithdrawal(
                                x.Asset,
-                               x.Address,
+                               x.Address ?? string.Empty,
                                x.Quantity,
                                x.Status != WithdrawStatus.Pending && x.Status != WithdrawStatus.PendingVerification,
                                x.CreateTime,
