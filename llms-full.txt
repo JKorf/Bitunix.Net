@@ -1,1 +1,687 @@
-TODO
+# Bitunix.Net Full LLM Context
+
+> Detailed reference for generating correct C#/.NET code with Bitunix.Net. Use this file when `llms.txt` is too brief and the task needs exact API routing, result types, SharedApis capabilities, or anti-hallucination guidance.
+
+Bitunix.Net is a strongly typed client for the Bitunix Spot and Futures REST and WebSocket APIs. It is based on CryptoExchange.Net and follows its client, options, result, logging, rate-limiting, socket, order-book, user-client, and SharedApis conventions.
+
+Repository package version: 0.1.0.
+
+CryptoExchange.Net dependency: 13.2.2.
+
+Target frameworks: netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+
+Native AOT: supported on compatible .NET targets.
+
+Primary sources:
+
+- `README.md`: overview, installation, feature summary, and basic examples
+- Documentation: https://cryptoexchange.jkorf.dev/docs/exchange-clients?library=Bitunix.Net
+- API reference: https://cryptoexchange.jkorf.dev/docs/exchange-clients/reference?library=Bitunix.Net
+- Interfaces: `Bitunix.Net/Interfaces/Clients/**`
+- Models: `Bitunix.Net/Objects/Models/**`
+- Enums: `Bitunix.Net/Enums/**`
+
+## Golden Rules
+
+- Use `BitunixRestClient` for REST and `BitunixSocketClient` for sockets.
+- Do not generate raw `HttpClient`, signing, or WebSocket protocol code.
+- Use `BitunixCredentials("key", "secret")` for private operations.
+- Always check `.Success` before reading `.Data`.
+- Direct REST methods return `HttpResult<T>` or `HttpResult`.
+- Futures subscriptions return `WebSocketResult<UpdateSubscription>`.
+- Spot socket order operations return `QueryResult<T>` or `QueryResult`; they are query/response operations, not subscriptions.
+- Symbols are concatenated uppercase pairs such as `ETHUSDT`.
+- Reuse clients or configure dependency injection.
+- Keep calls async; never use `.Result` or `.Wait()`.
+- Store successful Futures subscriptions and unsubscribe on shutdown.
+- Do not invent Spot market WebSocket subscriptions. The current Spot socket exposes order placement/cancellation only.
+- Do not invent a listen-key flow. Futures private streams authenticate using credentials configured on `BitunixSocketClient`.
+- When an exact method, parameter, callback, or return type matters, inspect `Bitunix.Net/Interfaces/Clients/**`.
+
+## Installation and Usings
+
+```bash
+dotnet add package Bitunix.Net
+```
+
+Typical direct API code:
+
+```csharp
+using Bitunix.Net;
+using Bitunix.Net.Clients;
+using Bitunix.Net.Enums;
+```
+
+Shared API code:
+
+```csharp
+using Bitunix.Net.Clients;
+using CryptoExchange.Net.SharedApis;
+```
+
+Dependency injection:
+
+```csharp
+using Bitunix.Net;
+using Bitunix.Net.Interfaces.Clients;
+using Microsoft.Extensions.DependencyInjection;
+```
+
+## Client Setup
+
+Public REST data requires no credentials:
+
+```csharp
+using var client = new BitunixRestClient();
+var result = await client.SpotApi.ExchangeData.GetLastPriceAsync("ETHUSDT");
+
+if (!result.Success)
+{
+    Console.WriteLine(result.Error);
+    return;
+}
+
+Console.WriteLine(result.Data);
+```
+
+Configure HMAC credentials for private endpoints:
+
+```csharp
+using var client = new BitunixRestClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+```
+
+The alternative builder form is valid:
+
+```csharp
+options.ApiCredentials = new BitunixCredentials()
+    .WithHMAC("API_KEY", "API_SECRET");
+```
+
+Configure private socket authentication on the socket client itself:
+
+```csharp
+using var socketClient = new BitunixSocketClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+```
+
+## Result Handling
+
+Always branch on `.Success`:
+
+```csharp
+var balances = await client.SpotApi.Account.GetBalancesAsync();
+if (!balances.Success)
+{
+    Console.WriteLine($"Code: {balances.Error?.Code}");
+    Console.WriteLine($"Message: {balances.Error?.Message}");
+    return;
+}
+
+foreach (var balance in balances.Data)
+    Console.WriteLine(balance.Asset);
+```
+
+The result family depends on the operation:
+
+```text
+REST data operation                HttpResult<T>
+REST operation with no body        HttpResult
+Futures WebSocket subscription     WebSocketResult<UpdateSubscription>
+Spot socket query with data        QueryResult<T>
+Spot socket query without data     QueryResult
+```
+
+Do not describe Spot socket order methods as subscriptions, and do not pass their result to `UnsubscribeAsync`.
+
+## Complete Client Shape
+
+```text
+BitunixRestClient
+  SpotApi
+    ExchangeData
+    Account
+    Trading
+    SharedApi
+  FuturesApi
+    ExchangeData
+    Account
+    Trading
+    SharedApi
+
+BitunixSocketClient
+  SpotApi
+    PlaceOrderAsync
+    CancelOrderAsync
+    CancelOrdersAsync
+    SharedApi
+  FuturesApi
+    SubscribeToTickerUpdatesAsync
+    SubscribeToAggregatedTickerUpdatesAsync
+    SubscribeToOrderBookUpdatesAsync
+    SubscribeToKlineUpdatesAsync
+    SubscribeToMarkPriceUpdatesAsync
+    SubscribeToTradeUpdatesAsync
+    SubscribeToUserUpdatesAsync
+    SharedApi
+```
+
+There is no `GeneralApi`, `UsdtFuturesApi`, `UsdFuturesApi`, `CoinFuturesApi`, margin API, or options API. The derivatives surface is `FuturesApi`.
+
+## Spot REST Map
+
+### ExchangeData
+
+```text
+Latest price              GetLastPriceAsync(symbol)
+Order book                GetOrderBookAsync(symbol)
+Current klines            GetKlinesAsync(symbol, KlineInterval)
+Historical klines         GetKlineHistoryAsync(symbol, interval, endTime?, limit?)
+Symbols/trading rules     GetSymbolsAsync()
+Exchange rates            GetExchangeRatesAsync()
+Assets and networks       GetAssetsAsync()
+```
+
+The direct Spot API exposes a last-price endpoint, not a 24-hour ticker model. This is why the Spot SharedApi does not implement `IGetTickerRest`.
+
+### Account
+
+```text
+Balances                  GetBalancesAsync()
+Withdraw                  WithdrawAsync(asset, network, address, quantity, memo?)
+Cancel withdrawal         CancelWithdrawalAsync(withdrawId)
+Spot/Futures transfer     TransferAsync(TransferType, asset, quantity)
+Withdrawal history        GetWithdrawalHistoryAsync(...filters...)
+Deposit history           GetDepositsAsync(...filters...)
+Deposit address           GetDepositAddressAsync(asset, network)
+```
+
+Withdrawal destinations must satisfy Bitunix's quick-withdrawal restrictions. Preserve the network parameter and optional memo/tag when generating withdrawal code.
+
+### Trading
+
+```text
+Place order               PlaceOrderAsync(symbol, orderSide, orderType, quantity, price?)
+Cancel order              CancelOrderAsync(symbol, orderId)
+Cancel batch              CancelOrdersAsync(IEnumerable<BitunixCancelOrderRequest>)
+Order history             GetOrderHistoryAsync(symbol, side?, type?, status?, start?, end?, page?, pageSize?)
+Open orders               GetOpenOrdersAsync(symbol)
+Order detail              GetOrderAsync(id)
+Trades for order          GetUserTradesAsync(symbol, orderId)
+```
+
+Direct Spot order placement has no `timeInForce`, `clientOrderId`, or quote-quantity parameter. Do not copy those parameters from another exchange.
+
+## Spot Order Example
+
+```csharp
+using Bitunix.Net;
+using Bitunix.Net.Clients;
+using Bitunix.Net.Enums;
+
+using var client = new BitunixRestClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+
+var order = await client.SpotApi.Trading.PlaceOrderAsync(
+    symbol: "ETHUSDT",
+    orderSide: OrderSide.Buy,
+    orderType: OrderType.Limit,
+    quantity: 0.01m,
+    price: 2000m);
+
+if (!order.Success)
+{
+    Console.WriteLine(order.Error);
+    return;
+}
+
+Console.WriteLine(order.Data.Id);
+```
+
+## Futures REST Map
+
+### ExchangeData
+
+```text
+One/all tickers           GetTickersAsync(symbols?)
+Order book                GetOrderBookAsync(symbol, limit?)
+All funding rates         GetFundingRatesAsync()
+Funding history           GetFundingRateHistoryAsync(symbol, start?, end?, limit?)
+Current funding rate      GetFundingRateAsync(symbol)
+Klines                    GetKlinesAsync(symbol, interval, priceType?, start?, end?, limit?)
+Symbols/trading rules     GetSymbolsAsync(symbols?)
+Position tiers            GetPositionTiersAsync(symbol)
+```
+
+Valid direct order-book limits are 1, 5, 15, or 50; null requests the full book. Use `FuturesKlineInterval` for REST klines and `FuturesSocketKlineInterval` for socket klines.
+
+### Account
+
+```text
+Adjust isolated margin    AdjustMarginAsync(symbol, asset, quantity, side?, positionId?)
+Futures balance           GetBalancesAsync(marginAsset)
+Trading settings          GetTradingSettingsAsync(symbols?)
+Position mode             GetPositionModeAsync()
+Leverage/margin mode      GetLeverageMarginModeAsync(symbol, marginAsset)
+Set position mode         SetPositionModeAsync(PositionMode)
+Set margin mode           SetMarginModeAsync(symbol, asset, MarginMode)
+Set leverage              SetLeverageAsync(symbol, marginAsset, leverage)
+```
+
+Unlike clients that return every Futures asset at once, `GetBalancesAsync` requires a margin asset such as `USDT`.
+
+### Trading
+
+```text
+Place order               PlaceOrderAsync(...)
+Edit order                EditOrderAsync(orderId?, clientOrderId?, quantity, ...)
+Cancel order              CancelOrderAsync(orderId?, clientOrderId?)
+Cancel batch              CancelOrdersAsync(IEnumerable<BitunixFuturesCancelRequest>)
+Cancel all orders         CancelAllOrdersAsync(symbol?)
+Close all positions       CloseAllPositionsAsync(symbol?)
+Close one position        ClosePositionAsync(positionId)
+Order history             GetOrderHistoryAsync(...filters...)
+Order detail              GetOrderAsync(orderId?, clientOrderId?)
+Open orders               GetOpenOrdersAsync(...filters...)
+User trades               GetUserTradesAsync(...filters...)
+Current positions         GetPositionsAsync(...filters...)
+Position history          GetPositionHistoryAsync(...filters...)
+Place order TP/SL         PlaceTpSlOrderAsync(...)
+Place position TP/SL      PlacePositionTpSlOrderAsync(...)
+Cancel TP/SL              CancelTpSlOrderAsync(...)
+Open TP/SL orders         GetOpenTpSlOrdersAsync(...)
+TP/SL history             GetTpSlOrderHistoryAsync(...)
+```
+
+Consult `IBitunixRestClientFuturesApiTrading.cs` for the long TP/SL signatures. Do not infer parameter ordering from another exchange.
+
+## Futures Order Example
+
+```csharp
+using Bitunix.Net;
+using Bitunix.Net.Clients;
+using Bitunix.Net.Enums;
+
+using var client = new BitunixRestClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+
+var leverage = await client.FuturesApi.Account.SetLeverageAsync(
+    symbol: "ETHUSDT",
+    marginAsset: "USDT",
+    leverage: 5);
+
+if (!leverage.Success)
+{
+    Console.WriteLine(leverage.Error);
+    return;
+}
+
+var order = await client.FuturesApi.Trading.PlaceOrderAsync(
+    symbol: "ETHUSDT",
+    side: OrderSide.Buy,
+    orderType: OrderType.Limit,
+    quantity: 0.1m,
+    price: 2000m,
+    tradeSide: TradeSide.Open,
+    timeInForce: TimeInForce.GoodTillCanceled);
+
+if (!order.Success)
+{
+    Console.WriteLine(order.Error);
+    return;
+}
+
+Console.WriteLine(order.Data.Id);
+```
+
+`tradeSide` expresses open versus close intent and is required by Bitunix in hedge mode. `PositionMode.HedgeMode` and `PositionMode.OneWay` are the available position modes. `MarginMode.Isolated` and `MarginMode.Cross` are the available margin modes. Use `reduceOnly: true` where appropriate when closing risk in one-way mode.
+
+Futures placement also supports optional position ID, client order ID, and inline TP/SL configuration. Prefer named arguments for these optional parameters.
+
+## Spot Socket Queries
+
+The Spot socket API provides authenticated request/response order operations:
+
+```csharp
+using var socketClient = new BitunixSocketClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+
+var result = await socketClient.SpotApi.PlaceOrderAsync(
+    symbol: "ETHUSDT",
+    orderSide: OrderSide.Buy,
+    orderType: OrderType.Limit,
+    quantity: 0.01m,
+    price: 2000m);
+
+if (!result.Success)
+{
+    Console.WriteLine(result.Error);
+    return;
+}
+
+Console.WriteLine(result.Data.Id);
+```
+
+`PlaceOrderAsync` returns `QueryResult<BitunixOrderResult>`. The cancellation methods return `QueryResult`. There is no `UpdateSubscription` to store or unsubscribe.
+
+## Futures WebSocket Streams
+
+Public streams:
+
+```text
+Ticker                     SubscribeToTickerUpdatesAsync(symbol[s], handler)
+Aggregated ticker          SubscribeToAggregatedTickerUpdatesAsync(symbol[s], handler)
+Order book                 SubscribeToOrderBookUpdatesAsync(symbol[s], limit, handler)
+Klines                     SubscribeToKlineUpdatesAsync(symbol[s], interval, priceType, handler)
+Mark price and funding     SubscribeToMarkPriceUpdatesAsync(symbol[s], handler)
+Trades                     SubscribeToTradeUpdatesAsync(symbol[s], handler)
+```
+
+Authenticated stream:
+
+```text
+Balance/order/position/TP-SL  SubscribeToUserUpdatesAsync(
+    onBalanceMessage?, onOrderMessage?, onPositionMessage?, onTpSlMessage?)
+```
+
+The public methods have single-symbol and multi-symbol overloads. Order-book socket limits are 1, 5, or 15 for full snapshots; null requests incremental updates.
+
+### Public Subscription Example
+
+```csharp
+using Bitunix.Net.Clients;
+
+using var socketClient = new BitunixSocketClient();
+var sub = await socketClient.FuturesApi.SubscribeToTickerUpdatesAsync(
+    "ETHUSDT",
+    update => Console.WriteLine(update.Data.LastPrice));
+
+if (!sub.Success)
+{
+    Console.WriteLine(sub.Error);
+    return;
+}
+
+// Keep the process alive or integrate the subscription into application lifetime.
+await socketClient.UnsubscribeAsync(sub.Data);
+```
+
+### Private Subscription Example
+
+```csharp
+using var socketClient = new BitunixSocketClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+
+var sub = await socketClient.FuturesApi.SubscribeToUserUpdatesAsync(
+    onBalanceMessage: update => Console.WriteLine("Balance update"),
+    onOrderMessage: update => Console.WriteLine("Order update"),
+    onPositionMessage: update => Console.WriteLine("Position update"),
+    onTpSlMessage: update => Console.WriteLine("TP/SL update"));
+
+if (!sub.Success)
+{
+    Console.WriteLine(sub.Error);
+    return;
+}
+
+await socketClient.UnsubscribeAsync(sub.Data);
+```
+
+Callbacks are optional, but provide at least the handlers relevant to the application. No REST-created listen key is involved.
+
+## SharedApis Overview
+
+Every API root has a strict `.SharedApi` surface. The aggregate `IBitunixSharedApiClient` groups:
+
+```text
+SpotRest       IBitunixRestClientSpotSharedApi
+FuturesRest    IBitunixRestClientFuturesSharedApi
+SpotSocket     IBitunixSocketClientSpotSharedApi
+FuturesSocket  IBitunixSocketClientFuturesSharedApi
+```
+
+Use a root's `.SharedApi` when transport and trading mode are already selected. Use the aggregate's `GetCapability(...)` or `GetCapabilities(...)` behavior when selecting capabilities at runtime.
+
+### Spot REST Shared Capabilities
+
+```text
+IGetAllAssetsRest
+IGetBalancesRest
+IGetDepositHistoryRest
+IGetDepositAddressesRest
+IGetKlinesRest
+IGetOrderBookRest
+IGetSpotSymbolsRest
+IGetWithdrawalHistoryRest
+IWithdrawRest
+IPlaceSpotOrderRest
+IGetSpotOrderRest
+IGetOpenSpotOrdersRest
+IGetClosedSpotOrdersRest
+IGetSpotOrderTradesRest
+ICancelSpotOrderRest
+```
+
+There is deliberately no `IGetTickerRest` on Spot. Use direct `GetLastPriceAsync` for a Spot price.
+
+### Futures REST Shared Capabilities
+
+```text
+IGetBalancesRest
+IGetFundingInfoRest
+IGetFundingRateHistoryRest
+IGetMarkPriceRest
+IGetAllMarkPricesRest
+IGetKlinesRest
+IGetMarkPriceKlinesRest
+IGetLeverageRest
+ISetLeverageRest
+IGetLeverageTiersRest
+IGetBookTickerRest
+IGetOrderBookRest
+IGetPositionModeRest
+ISetPositionModeRest
+IGetFuturesSymbolsRest
+IGetTickerRest
+IGetAllTickersRest
+IPlaceFuturesOrderRest
+IGetFuturesOrderRest
+IGetFuturesOrderByClientOrderIdRest
+IGetOpenFuturesOrdersRest
+IGetClosedFuturesOrdersRest
+ICancelFuturesOrderRest
+ICancelFuturesOrderByClientOrderIdRest
+IGetFuturesOrderTradesRest
+IGetFuturesUserTradeHistoryRest
+ICancelAllFuturesSymbolOrdersRest
+ICancelAllFuturesOrdersRest
+IEditFuturesOrderRest
+IEditFuturesOrderByClientOrderIdRest
+IGetPositionsRest
+IGetPositionHistoryRest
+ISetFuturesTpSlRest
+ICancelFuturesTpSlRest
+```
+
+### Spot Socket Shared Capabilities
+
+```text
+IPlaceSpotOrderSocket
+ICancelSpotOrderSocket
+```
+
+These are socket query capabilities, not streaming capabilities.
+
+### Futures Socket Shared Capabilities
+
+```text
+ISubscribeTradesSocket
+ISubscribeTickerSocket
+ISubscribeKlinesSocket
+ISubscribeOrderBookSocket
+ISubscribeFundingInfoSocket
+ISubscribeMarkPriceSocket
+ISubscribeIndexPriceSocket
+ISubscribeBalancesSocket
+ISubscribeFuturesOrdersSocket
+ISubscribePositionsSocket
+```
+
+### Shared Futures Ticker Example
+
+```csharp
+using Bitunix.Net.Clients;
+using CryptoExchange.Net.SharedApis;
+
+using var client = new BitunixRestClient();
+IGetTickerRest tickerClient = client.FuturesApi.SharedApi;
+
+var symbol = new SharedSymbol(
+    TradingMode.PerpetualLinear,
+    "ETH",
+    "USDT");
+
+var result = await tickerClient.GetTickerAsync(new GetTickerRequest(symbol));
+if (!result.Success)
+{
+    Console.WriteLine(result.Error);
+    return;
+}
+
+Console.WriteLine(result.Data.LastPrice);
+```
+
+Futures shared clients support both `TradingMode.PerpetualLinear` and `TradingMode.PerpetualInverse`; use the mode that matches the contract. Spot clients support `TradingMode.Spot`.
+
+For shared socket interfaces, keep the concrete `BitunixSocketClient` so it can unsubscribe the returned `UpdateSubscription`.
+
+## Dependency Injection
+
+```csharp
+services.AddBitunix(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+```
+
+The top-level credential is normalized onto both REST and socket options unless those surfaces have their own credentials. Available registrations include:
+
+```text
+IBitunixRestClient
+IBitunixSocketClient
+IBitunixSharedApiClient
+IBitunixOrderBookFactory
+IBitunixUserClientProvider
+IBitunixTrackerFactory / ITrackerFactory
+```
+
+Typical service:
+
+```csharp
+public sealed class TradingService
+{
+    private readonly IBitunixRestClient _restClient;
+    private readonly IBitunixSocketClient _socketClient;
+
+    public TradingService(
+        IBitunixRestClient restClient,
+        IBitunixSocketClient socketClient)
+    {
+        _restClient = restClient;
+        _socketClient = socketClient;
+    }
+}
+```
+
+## Environments
+
+Only `BitunixEnvironment.Live` is predefined:
+
+```csharp
+var client = new BitunixRestClient(options =>
+{
+    options.Environment = BitunixEnvironment.Live;
+});
+```
+
+Create a custom environment only when all four endpoints are known:
+
+```csharp
+var environment = BitunixEnvironment.CreateCustom(
+    name: "custom",
+    spotRestAddress: "https://spot-rest.example",
+    spotSocketStreamsAddress: "wss://spot-socket.example",
+    futuresRestAddress: "https://futures-rest.example",
+    futuresSocketStreamsAddress: "wss://futures-socket.example");
+```
+
+Do not invent a `Testnet` property.
+
+## Local Order Books and User Clients
+
+The library registers `IBitunixOrderBookFactory` for local order books. The implemented local order book is Futures-backed. Use the factory or `BitunixFuturesSymbolOrderBook` rather than attempting to merge depth messages manually.
+
+`IBitunixUserClientProvider` exists for account-specific client management. Prefer it when an application must safely manage multiple Bitunix credential sets rather than constructing ad-hoc clients throughout the codebase.
+
+## Common Mistakes
+
+- Using Binance, OKX, or another exchange client for Bitunix code.
+- Writing raw request URLs or custom signature code.
+- Calling the Futures root `UsdtFuturesApi`; the correct name is `FuturesApi`.
+- Assuming Spot has market WebSocket subscriptions.
+- Assuming Spot socket order methods return `WebSocketResult<UpdateSubscription>`; they return `QueryResult`.
+- Inventing a listen key for Futures private subscriptions.
+- Calling Spot's SharedApi through `IGetTickerRest`; that capability is absent.
+- Adding `timeInForce` or `clientOrderId` to direct Spot order placement.
+- Omitting the margin asset from Futures balance or leverage calls.
+- Using `KlineInterval` where `FuturesKlineInterval` or `FuturesSocketKlineInterval` is required.
+- Reading `.Data` after a failed result.
+- Calling `.Result` or `.Wait()`.
+- Creating a new client for each request.
+- Forgetting to unsubscribe a successful Futures subscription.
+- Inventing a built-in testnet environment.
+
+## Anti-Hallucination Checklist
+
+Before returning generated code, verify:
+
+- Does it use `BitunixRestClient` or `BitunixSocketClient`?
+- Is the API root exactly `SpotApi` or `FuturesApi`?
+- Is the symbol formatted like `ETHUSDT`?
+- Are private calls configured with `BitunixCredentials`?
+- Does every result check `.Success` before `.Data`?
+- Does a Spot socket order call use the `QueryResult` pattern?
+- Is `UnsubscribeAsync` used only for a successful Futures/shared subscription?
+- Does Futures leverage include `marginAsset`?
+- Is `tradeSide` supplied when hedge-mode intent is shown?
+- Does shared code target a capability actually implemented by that surface?
+- Is the code fully async and are clients reused?
+- Were exact method names and optional parameters checked against the interface source?
+
+## Source of Truth
+
+Use these interfaces instead of memory:
+
+```text
+Bitunix.Net/Interfaces/Clients/IBitunixRestClient.cs
+Bitunix.Net/Interfaces/Clients/IBitunixSocketClient.cs
+Bitunix.Net/Interfaces/Clients/IBitunixSharedApiClient.cs
+Bitunix.Net/Interfaces/Clients/SpotApi/IBitunixRestClientSpotApi*.cs
+Bitunix.Net/Interfaces/Clients/SpotApi/IBitunixSocketClientSpotApi*.cs
+Bitunix.Net/Interfaces/Clients/FuturesApi/IBitunixRestClientFuturesApi*.cs
+Bitunix.Net/Interfaces/Clients/FuturesApi/IBitunixSocketClientFuturesApi*.cs
+```
+
+Prefer the interface files for method names, overloads, parameter order, callbacks, and return types. Prefer the SharedApi interface inheritance lists for capability claims.

@@ -1,1 +1,100 @@
-TODO
+---
+description: Conventions for generating C#/.NET code that uses Bitunix.Net for Bitunix Spot and Futures REST or WebSocket access.
+globs:
+  - "**/*.cs"
+  - "**/*.csproj"
+alwaysApply: false
+---
+
+# Bitunix.Net Conventions
+
+Use `BitunixRestClient` and `BitunixSocketClient`; never generate raw Bitunix HTTP, signing, or WebSocket code.
+
+## Setup
+
+```csharp
+using Bitunix.Net;
+using Bitunix.Net.Clients;
+
+var restClient = new BitunixRestClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+```
+
+Credentials are unnecessary for public market data. Use `BitunixCredentials`, not generic `ApiCredentials`.
+
+## Result Handling
+
+- REST: `HttpResult<T>` or `HttpResult`
+- Futures subscriptions: `WebSocketResult<UpdateSubscription>`
+- Spot socket order queries: `QueryResult<T>` or `QueryResult`
+
+Always check `.Success` before `.Data`.
+
+```csharp
+var result = await restClient.SpotApi.ExchangeData.GetLastPriceAsync("ETHUSDT");
+if (!result.Success) { Console.WriteLine(result.Error); return; }
+Console.WriteLine(result.Data);
+```
+
+## API Structure
+
+- `restClient.SpotApi.{ExchangeData|Account|Trading|SharedApi}`
+- `restClient.FuturesApi.{ExchangeData|Account|Trading|SharedApi}`
+- `socketClient.SpotApi`: authenticated place/cancel order queries only
+- `socketClient.FuturesApi`: public market streams and private user streams
+- `socketClient.{SpotApi|FuturesApi}.SharedApi`: strict SharedApis capabilities
+
+Do not invent `GeneralApi`, `UsdtFuturesApi`, `CoinFuturesApi`, margin, or options roots.
+
+## Orders
+
+```csharp
+var spotOrder = await restClient.SpotApi.Trading.PlaceOrderAsync(
+    "ETHUSDT", OrderSide.Buy, OrderType.Limit, 0.01m, price: 2000m);
+
+var futuresOrder = await restClient.FuturesApi.Trading.PlaceOrderAsync(
+    "ETHUSDT", OrderSide.Buy, OrderType.Limit, 0.1m,
+    price: 2000m,
+    tradeSide: TradeSide.Open,
+    timeInForce: TimeInForce.GoodTillCanceled);
+```
+
+Spot direct orders do not accept time-in-force or client order ID. Futures `tradeSide` is required in hedge mode.
+
+## Futures Streams
+
+```csharp
+var socketClient = new BitunixSocketClient();
+var sub = await socketClient.FuturesApi.SubscribeToTickerUpdatesAsync(
+    "ETHUSDT", update => Console.WriteLine(update.Data.LastPrice));
+if (!sub.Success) { Console.WriteLine(sub.Error); return; }
+
+await socketClient.UnsubscribeAsync(sub.Data);
+```
+
+Futures subscriptions include ticker, aggregated ticker, order book, kline, mark price/funding, trades, and user balance/order/position/TP-SL updates. Configure credentials on the socket client for user updates; do not invent a listen-key flow.
+
+## SharedApis
+
+Use `.SharedApi` for exchange-independent code. `IBitunixSharedApiClient` groups `SpotRest`, `FuturesRest`, `SpotSocket`, and `FuturesSocket` for discovery and runtime capability lookup.
+
+Spot REST does not implement `IGetTickerRest`; use direct `GetLastPriceAsync` for Spot prices. Spot socket SharedApi exposes order placement/cancellation queries, not subscriptions. Futures REST and socket surfaces provide the broader ticker, market, account, order, and subscription capabilities.
+
+## Hard Rules
+
+- Never read `.Data` without checking `.Success`.
+- Never block async code with `.Result` or `.Wait()`.
+- Reuse clients or use `services.AddBitunix(...)`.
+- Store and unsubscribe Futures `UpdateSubscription` values.
+- Use concatenated symbols such as `ETHUSDT`.
+- Only `BitunixEnvironment.Live` is built in; use `CreateCustom` for custom endpoints.
+- Verify exact methods and parameters in `Bitunix.Net/Interfaces/Clients/**`.
+
+## Reference
+
+- `AGENTS.md`: fuller usage guidance
+- `llms-full.txt`: detailed API map and capability lists
+- `Bitunix.Net/Interfaces/Clients/**`: method source of truth
+- https://cryptoexchange.jkorf.dev/docs/exchange-clients?library=Bitunix.Net

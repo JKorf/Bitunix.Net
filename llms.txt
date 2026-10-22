@@ -1,1 +1,70 @@
-TODO
+# Bitunix.Net
+
+> Strongly typed .NET client library for the Bitunix Spot and Futures REST and WebSocket APIs. Part of the CryptoExchange.Net ecosystem, with shared exchange-independent abstractions.
+
+Bitunix.Net provides typed REST clients, Futures market and user WebSocket subscriptions, Spot WebSocket order queries, automatic socket connection management, HMAC credentials through `BitunixCredentials`, dependency injection helpers, local Futures order books, user-specific clients, Native AOT support, and CryptoExchange.Net SharedApis. It targets netstandard2.0, netstandard2.1, net8.0, net9.0, and net10.0.
+
+REST methods return `HttpResult<T>` or `HttpResult`. Futures WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`. Spot WebSocket order operations return `QueryResult<T>` or `QueryResult`. Always check `.Success` before reading `.Data`.
+
+The client roots are `BitunixRestClient.SpotApi`, `BitunixRestClient.FuturesApi`, `BitunixSocketClient.SpotApi`, and `BitunixSocketClient.FuturesApi`. Spot REST is split into `ExchangeData`, `Account`, and `Trading`; Futures REST has the same three groups. Symbols use forms such as `ETHUSDT` on both surfaces.
+
+Use the exchange-level `IBitunixSharedApiClient` aggregate for runtime capability lookup. Its four surfaces are `SpotRest`, `FuturesRest`, `SpotSocket`, and `FuturesSocket`; use an API root's `.SharedApi` when transport and trading mode are already known. Spot REST does not currently implement the shared ticker capability; use the direct `GetLastPriceAsync` method for Spot prices or use the Futures shared ticker capability.
+
+## Documentation
+
+- [README](https://github.com/JKorf/Bitunix.Net/blob/main/README.md): Installation, features, basic REST/WebSocket usage, and Shared API overview
+- [Documentation Site](https://cryptoexchange.jkorf.dev/docs/exchange-clients?library=Bitunix.Net): Client guide, examples, and API reference
+- [Full LLM Context](https://github.com/JKorf/Bitunix.Net/blob/main/llms-full.txt): Detailed code patterns, API routing, SharedApis capability lists, and anti-hallucination rules
+- [Source Interfaces](https://github.com/JKorf/Bitunix.Net/tree/main/Bitunix.Net/Interfaces/Clients): Authoritative method names, parameters, callbacks, and result types
+
+## Core API Map
+
+- `restClient.SpotApi.ExchangeData`: latest price, order book, klines, symbols, exchange rates, assets/networks
+- `restClient.SpotApi.Account`: balances, withdrawals, deposits, deposit addresses, Spot/Futures transfers
+- `restClient.SpotApi.Trading`: place/cancel/query Spot orders and user trades
+- `restClient.FuturesApi.ExchangeData`: tickers, order book, funding, klines, symbols, position tiers
+- `restClient.FuturesApi.Account`: balance, trading settings, position/margin mode, leverage, isolated margin
+- `restClient.FuturesApi.Trading`: Futures orders, positions, user trades, order history, and TP/SL orders
+- `socketClient.SpotApi`: authenticated Spot order placement and cancellation queries; no Spot market subscriptions
+- `socketClient.FuturesApi`: ticker, aggregated ticker, order book, kline, mark price, trade, and authenticated user updates
+
+## Examples
+
+```csharp
+using Bitunix.Net;
+using Bitunix.Net.Clients;
+using Bitunix.Net.Enums;
+
+var client = new BitunixRestClient(options =>
+{
+    options.ApiCredentials = new BitunixCredentials("API_KEY", "API_SECRET");
+});
+
+var result = await client.FuturesApi.Trading.PlaceOrderAsync(
+    symbol: "ETHUSDT",
+    side: OrderSide.Buy,
+    orderType: OrderType.Limit,
+    quantity: 0.1m,
+    price: 2000m,
+    tradeSide: TradeSide.Open);
+
+if (!result.Success) Console.WriteLine(result.Error);
+```
+
+```csharp
+var socketClient = new BitunixSocketClient();
+var sub = await socketClient.FuturesApi.SubscribeToTickerUpdatesAsync(
+    "ETHUSDT",
+    update => Console.WriteLine(update.Data.LastPrice));
+
+if (sub.Success)
+    await socketClient.UnsubscribeAsync(sub.Data);
+```
+
+## Reference
+
+- [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net): Base library and SharedApis contracts
+- [CryptoClients.Net](https://github.com/JKorf/CryptoClients.Net): Unified package containing multiple exchange clients
+- [NuGet Package](https://www.nuget.org/packages/Bitunix.Net): Bitunix.Net package
+- [GitHub Issues](https://github.com/JKorf/Bitunix.Net/issues): Bug reports and feature requests
+- [Discord Community](https://discord.gg/MSpeEtSY8t): Maintainer-supported community
