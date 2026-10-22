@@ -4,7 +4,7 @@
 
 Bitunix.Net is a strongly typed client for the Bitunix Spot and Futures REST and WebSocket APIs. It is based on CryptoExchange.Net and follows its client, options, result, logging, rate-limiting, socket, order-book, user-client, and SharedApis conventions.
 
-Repository package version: 0.1.0.
+Repository package version: 1.0.0.
 
 CryptoExchange.Net dependency: 13.2.2.
 
