@@ -2,4 +2,4 @@
 > { "op": "login", "args": [] }
 < {"op":"login","data":{"nonce":"","result":true}}
 = 
-{"ch":"order","ts":1792656276039,"data":{"event":"CLOSE","symbol":"ETHUSDT","orderId":"123","positionType":"CROSS","positionMode":"ONE_WAY","side":"Buy","effect":"GTC","type":"Limit","qty":"0.049","price":"2000","ctime":"2026-10-22T08:02:59.877973000Z","mtime":"2026-10-22T08:04:36.029931000Z","leverage":"10","orderStatus":"CANCELED","fee":"0","averagePrice":"0","dealAmount":"0","clientId":"123"}}
+{"ch":"balance","ts":1792656179891,"data":{"coin":"USDT","available":"44.834533612","frozen":"9.9176","isolationFrozen":"0","crossFrozen":"9.9176","margin":"0","isolationMargin":"0","crossMargin":"0","expMoney":"5"}}

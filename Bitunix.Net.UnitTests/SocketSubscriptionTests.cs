@@ -3,6 +3,10 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using Bitunix.Net.Clients;
 using Bitunix.Net.Objects.Models;
+using Microsoft.Extensions.Logging;
+using CryptoExchange.Net.Objects;
+using Microsoft.Extensions.Options;
+using Bitunix.Net.Objects.Options;
 
 namespace Bitunix.Net.UnitTests
 {
@@ -12,10 +16,14 @@ namespace Bitunix.Net.UnitTests
         [Test]
         public async Task ValidateSubscriptions()
         {
-            var client = new BitunixSocketClient(opts =>
+            var logFact = new LoggerFactory();
+            logFact.AddProvider(new TraceLoggerProvider());
+
+            var client = new BitunixSocketClient(Options.Create(new BitunixSocketOptions
             {
-                opts.ApiCredentials = new BitunixCredentials("123", "456");
-            });
+                ApiCredentials = new BitunixCredentials("123", "456"),
+                OutputOriginalData = true
+            }), logFact);
             var tester = new SocketSubscriptionValidator<BitunixSocketClient>(client, "Subscriptions/Futures", "wss://fapi.bitunix.com/public/");
             await tester.ValidateAsync<BitunixTickerUpdate>((client, handler) => client.FuturesApi.SubscribeToTickerUpdatesAsync("ETHUSDT", handler), "Ticker", "data");
             await tester.ValidateAsync<BitunixOrderBookUpdate>((client, handler) => client.FuturesApi.SubscribeToOrderBookUpdatesAsync("ETHUSDT", 5, handler), "OrderBook", "data");
