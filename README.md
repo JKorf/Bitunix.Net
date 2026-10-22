@@ -141,13 +141,6 @@ Console.WriteLine(result.Data.LastPrice);
 
 The request and response models belong to `CryptoExchange.Net.SharedApis`, so the same operation can accept another exchange's `IGetTickerRest` implementation. When using dependency injection, inject `ITP_RP_EXCHANGESharedApiClient` to access all Bitunix Shared API surfaces or inject a capability such as `IGetTickerRest` directly. Use `GetCapability` on the aggregate when the operation, transport, or trading mode is selected at runtime.
 
-
-### Supported shared interfaces
-
-| API | Type | Supported interfaces |
-|--|--|--|
-| TODO | REST | `IAssetsRestClient`,.. 
-
 ### Discover supported functionality
 
 ```csharp
