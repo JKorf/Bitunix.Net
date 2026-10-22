@@ -7,7 +7,8 @@ using Microsoft.Extensions.Options;
 
 namespace Bitunix.Net.Clients
 {
-    internal class BitunixSharedApiClient : SharedApiClientBase, IBitunixSharedApiClient
+    /// <inheritdoc />
+    public class BitunixSharedApiClient : SharedApiClientBase, IBitunixSharedApiClient
     {
         /// <inheritdoc />
         public IBitunixRestClientSpotSharedApi SpotRest { get; }
