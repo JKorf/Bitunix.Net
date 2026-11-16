@@ -97,82 +97,36 @@ var tickerSubscriptionResult = socketClient.FuturesApi.SubscribeToTickerUpdatesA
 
 For more examples and explanations, continue with the [Bitunix.Net documentation](https://cryptoexchange.jkorf.dev/docs/exchange-clients?library=Bitunix.Net) or browse the [compilable repository examples](https://github.com/JKorf/Bitunix.Net/tree/main/Examples).
 
-## AI / LLM documentation
+## AI documentation
 
-Bitunix.Net includes AI-oriented documentation and examples for code generation tools:
-
-|File|Purpose|
-|--|--|
-|[`AGENTS.md`](AGENTS.md)|Assistant skill with core Bitunix.Net patterns, pitfalls, and examples|
-|[`llms.txt`](llms.txt)|Short LLM index with links to docs, examples, and critical usage rules|
-|[`llms-full.txt`](llms-full.txt)|Detailed LLM context with endpoint routing, authentication levels, code patterns, and anti-hallucination checks|
-|[`docs/ai-api-map.md`](docs/ai-api-map.md)|Table-style intent-to-method map|
-|[`Examples/ai-friendly`](Examples/ai-friendly)|Compilable single-file examples for common REST, authentication/trading, WebSocket, DI/order book, and error handling workflows|
-
-See [cryptoexchange-skills-hub](https://github.com/JKorf/cryptoexchange-skills-hub) for installable skills.
+- [Library skill](.claude/skills/bitunix-net/SKILL.md): Consumer guidance and API references.
+- [Repository instructions](AGENTS.md): Development workflow and documentation ownership.
+- [llms.txt](llms.txt): Local documentation index.
+- [Complete examples](Examples/ai-friendly/): Programs compiled by the documentation test.
 
 ## Shared / unified API
 
-The CryptoExchange.Net [Shared API V2](https://cryptoexchange.jkorf.dev/docs/shared-api) provides exchange-agnostic interfaces and models for common operations such as retrieving tickers, order books and balances, placing orders, and subscribing to market updates.
-
-V2 uses a strict interface per capability. The `SharedApi` property on each Bitunix API surface therefore exposes only the operations or subscriptions that surface actually supports. `IBitunixSharedApiClient` groups the `SpotRest`, `FuturesRest`, `SpotSocket`, and `FuturesSocket` surfaces for dependency injection and runtime capability lookup.
-
-### Access a strict capability
+Each API root exposes Shared API V2 through `SharedApi`. `IBitunixSharedApiClient` groups `SpotRest`, `FuturesRest`, `SpotSocket`, and `FuturesSocket` for dependency injection and runtime capability lookup. For example, use the futures surface for a shared ticker; spot REST exposes native last price rather than a shared ticker capability.
 
 ```csharp
-using CryptoExchange.Net.SharedApis;
+using System;
 using Bitunix.Net.Clients;
+using CryptoExchange.Net.SharedApis;
 
-using var restClient = new BitunixRestClient();
-IGetTickerRest tickerClient = restClient.SpotApi.SharedApi;
-
-var symbol = new SharedSymbol(TradingMode.Spot, "ETH", "USDT");
-var result = await tickerClient.GetTickerAsync(
-    new GetTickerRequest(symbol));
-
+using var client = new BitunixRestClient();
+IGetTickerRest ticker = client.FuturesApi.SharedApi;
+var request = new GetTickerRequest(
+    new SharedSymbol(TradingMode.PerpetualLinear, "ETH", "USDT"));
+var result = await ticker.GetTickerAsync(request);
 if (!result.Success)
 {
     Console.WriteLine(result.Error);
     return;
 }
-
 Console.WriteLine(result.Data.LastPrice);
 ```
 
-The request and response models belong to `CryptoExchange.Net.SharedApis`, so the same operation can accept another exchange's `IGetTickerRest` implementation. When using dependency injection, inject `ITP_RP_EXCHANGESharedApiClient` to access all Bitunix Shared API surfaces or inject a capability such as `IGetTickerRest` directly. Use `GetCapability` on the aggregate when the operation, transport, or trading mode is selected at runtime.
-
-### Discover supported functionality
-
-```csharp
-var sharedClient = new BitunixRestClient().SpotApi.SharedClient;
-var clientInfo = sharedClient.Discover();
-
-Console.WriteLine(clientInfo);
-```
-
-### Example
-
-```csharp
-using Bitunix.Net.Clients;
-using CryptoExchange.Net.SharedApis;
-
-var sharedClient = new BitunixRestClient().SpotApi.SharedClient;
-ISpotTickerRestClient tickerClient = sharedClient;
-
-var symbol = new SharedSymbol(TradingMode.Spot, "ETH", "USDT");
-var result = await tickerClient.GetSpotTickerAsync(
-    new GetTickerRequest(symbol));
-
-if (!result.Success)
-{
-    Console.WriteLine(result.Error);
-    return;
-}
-
-Console.WriteLine(result.Data.LastPrice);
-```
-
-The request and response models belong to `CryptoExchange.Net.SharedApis`, so the same operation can accept another exchange's `IGetTickerRest` implementation. When using dependency injection, inject `IBitunixSharedApiClient` to access all Bitunix Shared API surfaces or inject a capability such as `IGetTickerRest` directly. Use `GetCapability` on the aggregate when the operation, transport, or trading mode is selected at runtime.
+See [API surfaces](.claude/skills/bitunix-net/references/api-surfaces.md#shared-api-v2) for capabilities and runtime selection, and the [complete Shared API example](Examples/ai-friendly/04-multi-exchange.cs) for a portable workflow.
 
 ## CryptoExchange.Net
 Bitunix.Net is based on the [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net) base library. Other exchange API implementations based on the CryptoExchange.Net base library are available and follow the same logic.
@@ -238,4 +192,3 @@ Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/s
 
 * Version 1.0.0 - 22 Oct 2026
     * Initial release
-

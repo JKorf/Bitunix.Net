@@ -27,7 +27,8 @@ else
     Console.WriteLine($"ETHUSDT: {price.Data}");
 }
 
-// Retry only errors marked transient, and keep the attempt count bounded.
+// For public reads only: retry transient failures with a bounded attempt count.
+// Do not use this helper to retry account-changing submissions.
 static async Task<HttpResult<T>> WithRetryAsync<T>(
     Func<Task<HttpResult<T>>> call,
     int maxAttempts = 3)
@@ -111,7 +112,7 @@ var order = await privateClient.SpotApi.Trading.PlaceOrderAsync(
 if (!order.Success)
 {
     var action = order.Error?.IsTransient == true
-        ? "Reconcile the order state, then retry with bounded backoff."
+        ? "Reconcile the order state before deciding whether to resubmit."
         : "Correct the request before retrying.";
 
     Console.WriteLine($"Order failed: {order.Error}. {action}");
