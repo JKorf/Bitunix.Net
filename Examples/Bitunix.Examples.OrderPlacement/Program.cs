@@ -5,8 +5,8 @@ using Bitunix.Net.Enums;
 const string spotSymbol = "BTCUSDT";
 
 // Replace with valid credentials or order placement will always fail
-var apiKey = "3a73aed9d5bd615c7cd9a703d7a51235";
-var apiSecret = "c49754ed6bc7634fa4cdf9146aca0f3d";
+var apiKey = "<key>";
+var apiSecret = "<secret>";
 
 Console.WriteLine("Bitunix.Net order placement example");
 Console.WriteLine();
