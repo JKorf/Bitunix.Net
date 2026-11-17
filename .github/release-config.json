@@ -1,0 +1,18 @@
+{
+  "baseBranch": "main",
+  "sdk": "11.0.100",
+  "packages": [
+    {
+      "key": "bitunix",
+      "project": "Bitunix.Net/Bitunix.Net.csproj",
+      "testProjects": [
+        "Bitunix.Net.UnitTests/Bitunix.Net.UnitTests.csproj"
+      ],
+      "packageId": "Bitunix.Net",
+      "readme": "README.md",
+      "tagPrefix": "Bitunix.Net.",
+      "releaseIntegrationTests": false,
+      "publishToGitHubPackages": true
+    }
+  ]
+}
