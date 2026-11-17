@@ -187,6 +187,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 1.1.0 - 17 Nov 2026
+    * Updated CryptoExchange.Net to v13.3.0
+
 * Version 1.0.1 - 22 Oct 2026
     * Fixed BitunixSharedApiClient accessibility
 
